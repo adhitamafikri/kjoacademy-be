@@ -1,0 +1,21 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: kjoacademy-be-mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: kjoacademy_lms_be
+      MYSQL_USER: fikridev
+      MYSQL_PASSWORD: 12345
+    volumes:
+      - kjoacademy-be-mysql-data:/var/lib/mysql
+    networks:
+      - kjoacademy-be-network
+
+volumes:
+  kjoacademy-be-mysql-data:
+
+networks:
+  kjoacademy-be-network:
