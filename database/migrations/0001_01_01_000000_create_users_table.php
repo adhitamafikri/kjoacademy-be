@@ -11,9 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::create('roles', function (Blueprint $table) {
+            $table->ulid('id')->primary()->nullable(false);
+            $table->string('name')->unique()->nullable(false);
+            $table->text('description')->nullable(false);
+            $table->json('permissions')->nullable(false);
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
         Schema::create('users', function (Blueprint $table) {
             $table->ulid('id')->primary()->nullable(false);
-            $table->integer('role_id')->nullable(false);
+            $table->ulid('role_id')->nullable(false);
             $table->string('name')->default('');
             $table->string('phone')->unique()->nullable(false);
             $table->string('email')->unique()->default('');
@@ -23,15 +32,12 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            // constraints
-            $table->foreignId('role_id')->references('id')->on('roles');
-        });
+            // foreign keys
+            $table->foreign('role_id')->references('id')->on('roles');
 
-        Schema::create('roles', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->timestamps();
-            $table->softDeletes();
+            // Add indexes for better performance
+            $table->index(['role_id', 'email']);
+            $table->index(['phone']);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -41,8 +47,8 @@ return new class extends Migration
         });
 
         Schema::create('sessions', function (Blueprint $table) {
-            $table->ulid('id')->primary();
-            $table->foreignId('user_id')->references('id')->on('users');
+            $table->ulid('id')->primary()->nullable(false);
+            $table->ulid('user_id')->nullable(false);
             $table->ipAddress('ip_address')->nullable(false);
             $table->json('device_info')->nullable(false);
             $table->text('user_agent')->nullable(false);
@@ -50,6 +56,15 @@ return new class extends Migration
             $table->timestamp('expires_at')->nullable(false);
             $table->timestamp('created_at');
             $table->timestamp('last_accessed_at');
+            $table->softDeletes();
+
+            // foreign keys
+            $table->foreign('user_id')->references('id')->on('users');
+
+            // Add indexes for session management
+            $table->index(['user_id', 'expires_at']);
+            $table->index(['token']);
+            $table->index(['expires_at']); // For cleanup operations
         });
     }
 
@@ -58,8 +73,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
         Schema::dropIfExists('roles');
+        Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }
