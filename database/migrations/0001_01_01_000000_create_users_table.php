@@ -12,13 +12,26 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
+            $table->ulid('id')->primary()->nullable(false);
+            $table->integer('role_id')->nullable(false);
+            $table->string('name')->default('');
+            $table->string('phone')->unique()->nullable(false);
+            $table->string('email')->unique()->default('');
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->default('');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
+
+            // constraints
+            $table->foreignId('role_id')->references('id')->on('roles');
+        });
+
+        Schema::create('roles', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -28,12 +41,15 @@ return new class extends Migration
         });
 
         Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
-            $table->string('ip_address', 45)->nullable();
-            $table->text('user_agent')->nullable();
-            $table->longText('payload');
-            $table->integer('last_activity')->index();
+            $table->ulid('id')->primary();
+            $table->foreignId('user_id')->references('id')->on('users');
+            $table->ipAddress('ip_address')->nullable(false);
+            $table->json('device_info')->nullable(false);
+            $table->text('user_agent')->nullable(false);
+            $table->text('token')->nullable(false);
+            $table->timestamp('expires_at')->nullable(false);
+            $table->timestamp('created_at');
+            $table->timestamp('last_accessed_at');
         });
     }
 
@@ -43,6 +59,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('users');
+        Schema::dropIfExists('roles');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }
