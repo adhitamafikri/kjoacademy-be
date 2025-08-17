@@ -4,11 +4,8 @@ services:
     container_name: kjoacademy-be-mysql
     ports:
       - 3306:3306
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: kjoacademy_lms_be
-      MYSQL_USER: fikridev
-      MYSQL_PASSWORD: 12345
+    env_file:
+      - ./env/.env.mysql
     volumes:
       - kjoacademy-be-mysql-data:/var/lib/mysql
     networks:
