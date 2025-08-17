@@ -28,23 +28,6 @@ class CourseCategory extends Model
         'deleted_at' => 'datetime',
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($category) {
-            if (empty($category->slug)) {
-                $category->slug = Str::slug($category->title);
-            }
-        });
-
-        static::updating(function ($category) {
-            if ($category->isDirty('title') && empty($category->slug)) {
-                $category->slug = Str::slug($category->title);
-            }
-        });
-    }
-
     // Relationship to courses
     public function courses()
     {
@@ -83,5 +66,22 @@ class CourseCategory extends Model
     public function scopeActive($query)
     {
         return $query->whereNull('deleted_at');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($category) {
+            if (empty($category->slug)) {
+                $category->slug = Str::slug($category->title);
+            }
+        });
+
+        static::updating(function ($category) {
+            if ($category->isDirty('title') && empty($category->slug)) {
+                $category->slug = Str::slug($category->title);
+            }
+        });
     }
 }
