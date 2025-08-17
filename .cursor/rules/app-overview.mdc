@@ -1,0 +1,10 @@
+---
+description: The App Overview
+alwaysApply: true
+---
+
+# About the App
+
+- We are creating an LMS (Learning Management System) App
+- We will have a user-facing site where user could enroll and learn on a course.
+- We will also have an admin-facing site to manage course categories, courses, course modules, lessons, and enrollments

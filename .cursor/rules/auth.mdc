@@ -1,0 +1,9 @@
+---
+description: The Auth Rule
+alwaysApply: true
+---
+
+# The Auth Rule
+
+- The app should adhere to Single-Session auth. Only one device can log-in at a time. Other devices should be logged off
+- The token should be kept in the HttpOnly cookie
