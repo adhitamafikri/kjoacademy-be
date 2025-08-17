@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->ulid('id')->primary()->nullable(false);
-            $table->ulid('category_id');
+            $table->ulid('category_id')->nullable(false);
             $table->string('title')->nullable(false);
             $table->string('slug')->unique()->nullable(false);
             $table->text('description')->nullable(false);
