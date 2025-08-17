@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('onboardings', function (Blueprint $table) {
+        Schema::create('course_categories', function (Blueprint $table) {
             $table->ulid('id')->primary()->nullable(false);
-            $table->ulid('user_id')->nullable(false);
-            $table->tinyInteger('onboarding_step')->default(0);
-            $table->boolean('completed')->default(false);
+            $table->string('title')->nullable(false);
+            $table->string('slug')->nullable(false);
+            $table->text('description')->nullable(false);
+            $table->integer('courses_count')->default(0);
             $table->timestamps();
-
-            // constraints
-            $table->foreignId('user_id')->references('id')->on('users');
+            $table->softDeletes();
         });
     }
 
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('onboardings');
+        Schema::dropIfExists('course_categories');
     }
 };
