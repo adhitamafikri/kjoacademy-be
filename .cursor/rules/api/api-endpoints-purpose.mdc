@@ -1,0 +1,81 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+
+# API Endpoints and their respective purpose
+
+## Specs
+
+- Current API version: `v1`
+
+## Important
+
+- This laravel project will be used by our frontend service (built with NextJS) for the student facing and admin facing sites
+- The auth system should be single session (only one device can log in at a time, other device should be automatically logged out when the user logs in with another device)
+- Adhere to the API versioning. You need to create the API route group (if it does not exist yet). All the API routes should be listed under that version group
+- The student and admin logs in only using OTP method
+
+## Endpoints and Purposes
+
+### Student Facing Site APIs
+
+Listed under: `/api/v1` group
+
+Here are the list:
+
+### Student Auth
+
+- POST `/auth/request-otp` -> Request OTP code for login
+- POST `/auth/verify-otp` -> Verify OTP code for login
+- POST `/auth/logout` -> Logout
+- POST `/auth/refresh-session` -> Refresh token endpoint, keeping the user logged in
+
+### Student Course Categories
+
+- GET `/categories` -> Get course categories
+- GET `/categories/${slug}` -> Get course category by slug
+
+### Student Courses
+
+- GET `/courses` -> Get courses
+- GET `/courses/${slug}` -> Get course by slug
+- GET `/courses/categories/${slug}` -> Get courses within specific category by slug
+- POST `/courses/${slug}/enroll` -> Enroll specific course
+- GET `/courses/${slug}/progress` -> Get the course progress (includes the module and lesson progress)
+- POST `/courses/${slug}/progress` -> Update the course progress (includes the module and lesson progress)
+
+------------------------
+------------------------
+------------------------
+------------------------
+
+### Admin Facing Site APIs
+
+Listed under: `/api/v1/admin` group
+
+Here are the list:
+
+### Admin Auth
+
+- POST `/auth/request-otp` -> Request OTP code for login
+- POST `/auth/verify-otp` -> Verify OTP code for login
+- POST `/auth/logout` -> Logout
+- POST `/auth/refresh-session` -> Refresh token endpoint, keeping the user logged in
+
+### Admin Course Categories
+
+- GET `/categories` -> Get course categories
+- GET `/categories/${slug}` -> Get course category by slug
+- POST `/categories` -> Create new course category
+- PUT `/categories/${slug}` -> Update course category
+- DELETE `/categories/${slug}` -> DELETE course category by id
+
+### Admin Courses
+
+- GET `/courses` -> Get course categories
+- GET `/courses/${slug}` -> Get course by slug
+- POST `/courses` -> Create new course
+- PUT `/courses/${slug}` -> Update course
+- DELETE `/courses/${slug}` -> DELETE course id
