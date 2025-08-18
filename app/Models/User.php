@@ -46,6 +46,12 @@ class User extends Authenticatable
         'deleted_at' => 'datetime',
     ];
 
+    // Role relationship
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
     // Relationships
     public function enrollments()
     {
@@ -67,5 +73,16 @@ class User extends Authenticatable
         return $this->belongsToMany(Course::class, 'enrollments', 'user_id', 'course_id')
                     ->withPivot(['status', 'progress_percentage', 'enrolled_at', 'completed_at'])
                     ->withTimestamps();
+    }
+
+    // Progress relationships
+    public function moduleProgress()
+    {
+        return $this->hasMany(ModuleProgress::class, 'user_id');
+    }
+
+    public function lessonProgress()
+    {
+        return $this->hasMany(LessonProgress::class, 'user_id');
     }
 }

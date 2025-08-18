@@ -50,6 +50,17 @@ class Enrollment extends Model
         return $this->belongsTo(Course::class, 'course_id');
     }
 
+    // Progress relationships
+    public function moduleProgress()
+    {
+        return $this->hasMany(ModuleProgress::class, 'course_enrollment_id');
+    }
+
+    public function lessonProgress()
+    {
+        return $this->hasMany(LessonProgress::class, 'course_enrollment_id');
+    }
+
     // Scopes
     public function scopeByUser($query, $userId)
     {

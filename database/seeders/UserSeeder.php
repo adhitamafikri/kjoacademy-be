@@ -29,5 +29,43 @@ class UserSeeder extends Seeder
             'name' => 'Adhitama F Student',
             'phone' => '087840052978'
         ]);
+
+        // Create 5 more students for testing
+        $students = [
+            [
+                'name' => 'John Doe',
+                'phone' => '081234567890',
+                'email' => 'john.doe@example.com',
+            ],
+            [
+                'name' => 'Jane Smith',
+                'phone' => '081234567891',
+                'email' => 'jane.smith@example.com',
+            ],
+            [
+                'name' => 'Mike Johnson',
+                'phone' => '081234567892',
+                'email' => 'mike.johnson@example.com',
+            ],
+            [
+                'name' => 'Sarah Wilson',
+                'phone' => '081234567893',
+                'email' => 'sarah.wilson@example.com',
+            ],
+            [
+                'name' => 'David Brown',
+                'phone' => '081234567894',
+                'email' => 'david.brown@example.com',
+            ],
+        ];
+
+        foreach ($students as $student) {
+            User::create([
+                'role_id' => $student_role->id,
+                'name' => $student['name'],
+                'phone' => $student['phone'],
+                'email' => $student['email'],
+            ]);
+        }
     }
 }
