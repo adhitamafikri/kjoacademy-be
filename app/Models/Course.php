@@ -78,6 +78,29 @@ class Course extends Model
                     ->orderBy('order');
     }
 
+    // Enrollment relationships
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class, 'course_id');
+    }
+
+    public function activeEnrollments()
+    {
+        return $this->hasMany(Enrollment::class, 'course_id')->whereNotIn('status', ['dropped']);
+    }
+
+    public function completedEnrollments()
+    {
+        return $this->hasMany(Enrollment::class, 'course_id')->where('status', 'completed');
+    }
+
+    public function enrolledUsers()
+    {
+        return $this->belongsToMany(User::class, 'enrollments', 'course_id', 'user_id')
+                    ->withPivot(['status', 'progress_percentage', 'enrolled_at', 'completed_at'])
+                    ->withTimestamps();
+    }
+
     // High-performance scopes
     public function scopePublished($query)
     {

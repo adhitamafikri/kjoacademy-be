@@ -45,4 +45,27 @@ class User extends Authenticatable
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
+
+    // Relationships
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class, 'user_id');
+    }
+
+    public function activeEnrollments()
+    {
+        return $this->hasMany(Enrollment::class, 'user_id')->whereNotIn('status', ['dropped']);
+    }
+
+    public function completedEnrollments()
+    {
+        return $this->hasMany(Enrollment::class, 'user_id')->where('status', 'completed');
+    }
+
+    public function enrolledCourses()
+    {
+        return $this->belongsToMany(Course::class, 'enrollments', 'user_id', 'course_id')
+                    ->withPivot(['status', 'progress_percentage', 'enrolled_at', 'completed_at'])
+                    ->withTimestamps();
+    }
 }
