@@ -16,7 +16,6 @@ class Course extends Model
     protected $table = 'courses';
 
     protected $fillable = [
-        'category_id',
         'title',
         'slug',
         'description',
@@ -37,9 +36,33 @@ class Course extends Model
     ];
 
     // Relationships with eager loading optimization
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo(CourseCategory::class, 'category_id');
+        return $this->belongsToMany(CourseCategory::class)
+            ->withPivot('is_primary')
+            ->withTimestamps();
+    }
+
+    // Get primary category
+    public function primaryCategory()
+    {
+        return $this->categories()->wherePivot('is_primary', true)->first();
+    }
+
+    // Get additional categories (non-primary)
+    public function additionalCategories()
+    {
+        return $this->categories()->wherePivot('is_primary', false);
+    }
+
+    // Set primary category
+    public function setPrimaryCategory(CourseCategory $category)
+    {
+        // Remove existing primary
+        $this->categories()->updateExistingPivot($this->categories()->pluck('id'), ['is_primary' => false]);
+
+        // Set new primary
+        $this->categories()->updateExistingPivot($category->id, ['is_primary' => true]);
     }
 
     // High-performance scopes
@@ -50,7 +73,7 @@ class Course extends Model
 
     public function scopeWithRelations($query)
     {
-        return $query->with(['category']);
+        return $query->with(['categories']);
     }
 
     public function scopeSearch($query, $search)
@@ -58,6 +81,13 @@ class Course extends Model
         return $query->where(function ($q) use ($search) {
             $q->where('title', 'like', "%{$search}%")
                 ->orWhere('description', 'like', "%{$search}%");
+        });
+    }
+
+    public function scopeByCategory($query, $categoryId)
+    {
+        return $query->whereHas('categories', function ($q) use ($categoryId) {
+            $q->where('course_categories.id', $categoryId);
         });
     }
 
@@ -95,31 +125,23 @@ class Course extends Model
             }
         });
 
-        // Increment count when course is created
         static::created(function ($course) {
-            $course->category->incrementCoursesCount();
+            // Refresh counts for all categories this course belongs to
+            $course->categories()->each(function ($category) {
+                $category->refreshCoursesCount();
+            });
         });
 
-        // Decrement count when course is deleted
         static::deleted(function ($course) {
-            $course->category->decrementCoursesCount();
+            // Refresh counts for all categories this course belonged to
+            $course->categories()->each(function ($category) {
+                $category->refreshCoursesCount();
+            });
         });
 
         static::updating(function ($course) {
             if ($course->isDirty('title') && empty($course->slug)) {
                 $course->slug = Str::slug($course->title);
-            }
-        });
-
-        // Handle category changes
-        static::updated(function ($course) {
-            if ($course->isDirty('category_id')) {
-                // Decrement old category
-                if ($course->getOriginal('category_id')) {
-                    $course->getOriginal('category')->decrementCoursesCount();
-                }
-                // Increment new category
-                $course->category->incrementCoursesCount();
             }
         });
     }

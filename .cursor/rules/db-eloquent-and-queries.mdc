@@ -7,4 +7,4 @@ alwaysApply: true
 
 - I want you to think critically and analyze the prompt thoroughly before providing any solution
 - Keep this in mind. You need to provide queries that are performant for retrieval, insertion, update, and deletion of data.
-- Limit the number of solutions to maximum of 3. All of them should be the most performant solution possible, with the #3 solution as the most recommended solution we can use. With these given options, me as a developer could also learn about the other performant approaches, not only the best one.
+- Limit the number of solutions to maximum of 1. It should be the most performant and recommended solution possible. Make sure it is also not overly complicated.

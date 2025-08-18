@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->ulid('id')->primary()->nullable(false);
-            $table->ulid('category_id')->nullable(false);
             $table->string('title')->nullable(false);
             $table->string('slug')->unique()->nullable(false);
             $table->text('description')->nullable(false);
@@ -25,11 +24,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            // constraints
-            $table->foreign('category_id')->references('id')->on('course_categories');
-
             // indexes
-            $table->index(['category_id', 'is_published', 'created_at']);
             $table->index(['enrollment_count', 'is_published']);
         });
     }

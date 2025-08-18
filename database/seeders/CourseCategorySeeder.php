@@ -30,6 +30,16 @@ class CourseCategorySeeder extends Seeder
                 'slug' => 'blockchain-fundamentals',
                 'description' => 'Learn the basics of blockchain technology',
             ],
+            [
+                'title' => 'Smart Contracts',
+                'slug' => 'smart-contracts',
+                'description' => 'Learn to develop and deploy smart contracts',
+            ],
+            [
+                'title' => 'DeFi (Decentralized Finance)',
+                'slug' => 'defi-decentralized-finance',
+                'description' => 'Explore decentralized finance protocols and applications',
+            ],
         ];
 
         foreach ($categories as $category) {

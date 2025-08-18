@@ -31,7 +31,21 @@ class CourseCategory extends Model
     // Relationship to courses
     public function courses()
     {
-        return $this->hasMany(Course::class, 'category_id');
+        return $this->belongsToMany(Course::class, 'course_course_category', 'course_category_id', 'course_id')
+            ->withPivot('is_primary')
+            ->withTimestamps();
+    }
+
+    // Get courses where this category is primary
+    public function primaryCourses()
+    {
+        return $this->courses()->wherePivot('is_primary', true);
+    }
+
+    // Get courses where this category is additional
+    public function additionalCourses()
+    {
+        return $this->courses()->wherePivot('is_primary', false);
     }
 
     // Use cached count for listings
@@ -52,20 +66,26 @@ class CourseCategory extends Model
         $this->update(['courses_count' => $this->courses()->count()]);
     }
 
-    public function incrementCoursesCount()
+    // Batch refresh for all categories (useful for maintenance)
+    public static function refreshAllCoursesCounts()
     {
-        $this->increment('courses_count');
-    }
-
-    public function decrementCoursesCount()
-    {
-        $this->decrement('courses_count');
+        static::chunk(100, function ($categories) {
+            foreach ($categories as $category) {
+                $category->refreshCoursesCount();
+            }
+        });
     }
 
     // Scope for active categories
     public function scopeActive($query)
     {
         return $query->whereNull('deleted_at');
+    }
+
+    // Scope to order by courses count
+    public function scopeOrderByCoursesCount($query, $direction = 'desc')
+    {
+        return $query->orderBy('courses_count', $direction);
     }
 
     protected static function boot()
