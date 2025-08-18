@@ -25,9 +25,9 @@ return new class extends Migration
             $table->ulid('role_id')->nullable(false);
             $table->string('name')->default('');
             $table->string('phone')->unique()->nullable(false);
-            $table->string('email')->unique()->default('');
+            $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password')->default('');
+            $table->string('password')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
