@@ -28,6 +28,8 @@ return new class extends Migration
             $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
+            $table->timestamp('onboarding_completed_at')->nullable();
+            $table->timestamp('onboarding_started_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

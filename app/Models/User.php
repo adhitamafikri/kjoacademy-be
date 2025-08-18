@@ -26,6 +26,8 @@ class User extends Authenticatable
         'email',
         'email_verified_at',
         'password',
+        'onboarding_completed_at',
+        'onboarding_started_at',
     ];
 
     /**
@@ -44,6 +46,8 @@ class User extends Authenticatable
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
+        'onboarding_completed_at' => 'datetime',
+        'onboarding_started_at' => 'datetime',
     ];
 
     // Role relationship
@@ -84,5 +88,71 @@ class User extends Authenticatable
     public function lessonProgress()
     {
         return $this->hasMany(LessonProgress::class, 'user_id');
+    }
+
+    // Onboarding relationships
+    public function onboardingProgress()
+    {
+        return $this->hasMany(OnboardingProgress::class, 'user_id');
+    }
+
+    // Onboarding methods
+    public function hasCompletedOnboarding()
+    {
+        return !is_null($this->onboarding_completed_at);
+    }
+
+    public function hasStartedOnboarding()
+    {
+        return !is_null($this->onboarding_started_at);
+    }
+
+    public function canAccessNonOnboardingContent()
+    {
+        return $this->hasCompletedOnboarding();
+    }
+
+    public function getOnboardingProgressPercentage()
+    {
+        $onboardingCategory = CourseCategory::where('slug', 'kjoacademy-onboarding')->first();
+        
+        if (!$onboardingCategory) {
+            return 0;
+        }
+
+        $totalOnboardingCourses = $onboardingCategory->courses()->count();
+        $completedOnboardingCourses = $this->onboardingProgress()
+            ->where('status', OnboardingProgress::STATUS_COMPLETED)
+            ->count();
+
+        return $totalOnboardingCourses > 0 ? round(($completedOnboardingCourses / $totalOnboardingCourses) * 100) : 0;
+    }
+
+    public function getCompletedOnboardingCourses()
+    {
+        return $this->onboardingProgress()
+            ->where('status', OnboardingProgress::STATUS_COMPLETED)
+            ->with('onboardingCourse')
+            ->get();
+    }
+
+    public function getInProgressOnboardingCourses()
+    {
+        return $this->onboardingProgress()
+            ->where('status', OnboardingProgress::STATUS_IN_PROGRESS)
+            ->with('onboardingCourse')
+            ->get();
+    }
+
+    public function startOnboarding()
+    {
+        if (!$this->hasStartedOnboarding()) {
+            $this->update(['onboarding_started_at' => now()]);
+        }
+    }
+
+    public function completeOnboarding()
+    {
+        $this->update(['onboarding_completed_at' => now()]);
     }
 }

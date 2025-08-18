@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             EnrollmentSeeder::class,
             ModuleProgressSeeder::class,
             LessonProgressSeeder::class,
+            OnboardingProgressSeeder::class,
         ]);
     }
 }
