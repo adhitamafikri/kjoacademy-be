@@ -53,19 +53,6 @@ class RoleSeeder extends Seeder
                     'enrollments.create',
                 ],
             ],
-            [
-                'name' => 'moderator',
-                'description' => 'Content moderator with limited administrative capabilities',
-                'permissions' => [
-                    'courses.view',
-                    'courses.edit',
-                    'enrollments.view',
-                    'enrollments.edit',
-                    'categories.view',
-                    'categories.edit',
-                    'reports.view',
-                ],
-            ],
         ];
 
         // Create system roles
@@ -74,55 +61,6 @@ class RoleSeeder extends Seeder
                 ['name' => $roleData['name']],
                 $roleData
             );
-        }
-
-        // Create additional custom roles for testing
-        $customRoles = [
-            [
-                'name' => 'content_creator',
-                'description' => 'Specialized role for creating and managing course content',
-                'permissions' => [
-                    'courses.view',
-                    'courses.create',
-                    'courses.edit',
-                    'categories.view',
-                    'categories.create',
-                    'categories.edit',
-                ],
-            ],
-            [
-                'name' => 'support_agent',
-                'description' => 'Customer support agent with limited access',
-                'permissions' => [
-                    'users.view',
-                    'enrollments.view',
-                    'enrollments.edit',
-                    'reports.view',
-                ],
-            ],
-            [
-                'name' => 'analyst',
-                'description' => 'Data analyst with reporting capabilities',
-                'permissions' => [
-                    'courses.view',
-                    'enrollments.view',
-                    'reports.view',
-                    'reports.create',
-                ],
-            ],
-        ];
-
-        // Create custom roles
-        foreach ($customRoles as $roleData) {
-            Role::updateOrCreate(
-                ['name' => $roleData['name']],
-                $roleData
-            );
-        }
-
-        // Create some random roles for testing (optional)
-        if (app()->environment('local', 'testing')) {
-            Role::factory(5)->create();
         }
 
         $this->command->info('Roles seeded successfully!');

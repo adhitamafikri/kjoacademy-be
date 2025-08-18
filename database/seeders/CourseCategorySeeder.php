@@ -11,20 +11,24 @@ class CourseCategorySeeder extends Seeder
     {
         $categories = [
             [
-                'title' => 'Programming',
+                'title' => 'Onboarding',
+                'slug' => 'kjoacademy-onboarding',
                 'description' => 'Learn various programming languages and frameworks',
             ],
             [
-                'title' => 'Design',
-                'description' => 'Master design principles and tools',
+                'title' => 'Web 3 Fundamentals',
+                'slug' => 'web-3-fundamentals',
+                'description' => 'Master Web 3 Fundamentals',
             ],
             [
-                'title' => 'Business',
-                'description' => 'Develop business and management skills',
+                'title' => 'Crypto Currency Trading',
+                'slug' => 'crypto-currency-trading',
+                'description' => 'Learn the basics of crypto currency trading',
             ],
             [
-                'title' => 'Marketing',
-                'description' => 'Learn digital and traditional marketing strategies',
+                'title' => 'Blockchain Fundamentals',
+                'slug' => 'blockchain-fundamentals',
+                'description' => 'Learn the basics of blockchain technology',
             ],
         ];
 

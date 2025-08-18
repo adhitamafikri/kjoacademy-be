@@ -11,48 +11,46 @@ class CourseSeeder extends Seeder
 {
     public function run(): void
     {
-        $categories = CourseCategory::all();
-        $instructors = User::where('role_id', 2)->get(); // Assuming role_id 2 is instructor
-
-        if ($categories->isEmpty() || $instructors->isEmpty()) {
-            $this->command->warn('Please run CourseCategorySeeder and create instructors first!');
-            return;
-        }
+        $onboarding_category = CourseCategory::where('slug', '=', 'kjoacademy-onboarding')->first();
+        $web3_fundamentals_category = CourseCategory::where('slug', '=', 'web-3-fundamentals')->first();
+        $crypto_currency_trading_category = CourseCategory::where('slug', '=', 'crypto-currency-trading')->first();
 
         // Create sample courses
         $courses = [
             [
-                'title' => 'Laravel Fundamentals',
-                'description' => 'Learn the basics of Laravel framework',
-                'price' => 49.99,
-                'difficulty_level' => 'beginner',
-                'duration_minutes' => 180,
+                'category_id' => $onboarding_category->id,
+                'title' => 'Onboarding Course - KJO Academy',
+                'slug' => 'onboarding-course-kjoacademy',
+                'description' => 'Learn the basics of KJO Academy',
+                'thumbnail_url' => 'https://placehold.co/400',
+                'enrollment_count' => 0,
+                'duration_seconds' => 3600,
+                'is_published' => true,
             ],
             [
-                'title' => 'Advanced PHP Patterns',
-                'description' => 'Master advanced PHP design patterns',
-                'price' => 79.99,
-                'difficulty_level' => 'advanced',
-                'duration_minutes' => 240,
+                'category_id' => $web3_fundamentals_category->id,
+                'title' => 'How to create Web 3 Apps',
+                'slug' => 'how-to-create-web-3-apps',
+                'description' => 'Learn to create Web 3 Apps',
+                'thumbnail_url' => 'https://placehold.co/400',
+                'enrollment_count' => 0,
+                'duration_seconds' => 3800,
+                'is_published' => true,
             ],
             [
-                'title' => 'Vue.js for Beginners',
-                'description' => 'Start your journey with Vue.js',
-                'price' => 39.99,
-                'difficulty_level' => 'beginner',
-                'duration_minutes' => 120,
+                'category_id' => $crypto_currency_trading_category->id,
+                'title' => 'Fundamentals of Crypto Currency Trading',
+                'slug' => 'fundamentals-of-crypto-currency-trading',
+                'description' => 'Learn the basics of Crypto Currency Trading',
+                'thumbnail_url' => 'https://placehold.co/400',
+                'enrollment_count' => 0,
+                'duration_seconds' => 900,
+                'is_published' => true,
             ],
         ];
 
         foreach ($courses as $courseData) {
-            Course::create(array_merge($courseData, [
-                'category_id' => $categories->random()->id,
-                'instructor_id' => $instructors->random()->id,
-                'is_published' => true,
-            ]));
+            Course::create($courseData);
         }
-
-        // Create additional random courses
-        Course::factory(20)->create();
     }
 }

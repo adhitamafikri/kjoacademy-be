@@ -42,7 +42,7 @@ return new class extends Migration
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
-            $table->string('token');
+            $table->string('payload', 255)->nullable(false);
             $table->timestamp('created_at')->nullable();
         });
 
@@ -52,10 +52,10 @@ return new class extends Migration
             $table->ipAddress('ip_address')->nullable(false);
             $table->json('device_info')->nullable(false);
             $table->text('user_agent')->nullable(false);
-            $table->text('token')->nullable(false);
+            $table->string('payload', 255)->nullable(false);
             $table->timestamp('expires_at')->nullable(false);
             $table->timestamp('created_at');
-            $table->timestamp('last_accessed_at');
+            $table->timestamp('last_activity');
             $table->softDeletes();
 
             // foreign keys
@@ -63,7 +63,6 @@ return new class extends Migration
 
             // Add indexes for session management
             $table->index(['user_id', 'expires_at']);
-            $table->index(['token']);
             $table->index(['expires_at']); // For cleanup operations
         });
     }

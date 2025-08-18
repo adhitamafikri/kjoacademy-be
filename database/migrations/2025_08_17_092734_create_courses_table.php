@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('enrollment_count')->default(0);
             $table->integer('duration_seconds')->default(0);
             $table->boolean('is_published')->default(false);
-            $table->json('metadata')->nullable(false);
+            $table->json('metadata')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
