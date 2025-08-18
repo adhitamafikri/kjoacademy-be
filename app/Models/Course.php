@@ -65,6 +65,19 @@ class Course extends Model
         $this->categories()->updateExistingPivot($category->id, ['is_primary' => true]);
     }
 
+    // Course modules relationship
+    public function modules()
+    {
+        return $this->hasMany(CourseModule::class, 'course_id')->orderBy('order');
+    }
+
+    public function publishedModules()
+    {
+        return $this->hasMany(CourseModule::class, 'course_id')
+                    ->where('is_published', true)
+                    ->orderBy('order');
+    }
+
     // High-performance scopes
     public function scopePublished($query)
     {
@@ -73,7 +86,7 @@ class Course extends Model
 
     public function scopeWithRelations($query)
     {
-        return $query->with(['categories']);
+        return $query->with(['categories', 'modules']);
     }
 
     public function scopeSearch($query, $search)
@@ -113,6 +126,12 @@ class Course extends Model
         $hours = floor($this->duration_seconds / 3600);
         $minutes = $this->duration_seconds % 60;
         return $hours > 0 ? "{$hours}h {$minutes}m" : "{$minutes}m";
+    }
+
+    public function refreshDuration()
+    {
+        $duration = $this->modules()->sum('duration_seconds');
+        $this->update(['duration_seconds' => $duration]);
     }
 
     protected static function boot()
