@@ -31,12 +31,13 @@ Route::prefix('v1')->group(function () {
 
     Route::prefix('categories')->group(function () {
         Route::get('/', [StudentCourseCategoryController::class, 'getCategories']);
-        Route::get('/{id}', [StudentCourseCategoryController::class, 'getCategoryById']);
+        Route::get('/{slug}', [StudentCourseCategoryController::class, 'getCategoryBySlug']);
     });
 
     Route::prefix('courses')->group(function () {
-        Route::get('/', [StudentCourseController::class, 'getCourse']);
-        Route::get('/{id}', [StudentCourseController::class, 'getCourseById']);
+        Route::get('/', [StudentCourseController::class, 'getCourses']);
+        Route::get('/{slug}', [StudentCourseController::class, 'getCourseBySlug']);
+        Route::get('/categories/{slug}', [StudentCourseController::class, 'getCoursesByCategory']);
         Route::get('/me', [StudentCourseController::class, 'getMyCourses']);
     });
 });
