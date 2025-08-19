@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('onboarding_progress', function (Blueprint $table) {
             $table->id();
-            $table->ulid('user_id');
+            $table->unsignedBigInteger('user_id');
             $table->ulid('onboarding_course_id');
             $table->enum('status', ['not_started', 'in_progress', 'completed'])->default('not_started');
             $table->integer('progress_percentage')->default(0);

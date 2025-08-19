@@ -21,7 +21,7 @@ return new class extends Migration
         });
 
         Schema::create('users', function (Blueprint $table) {
-            $table->ulid('id')->primary()->nullable(false);
+            $table->id()->primary()->nullable(false);
             $table->ulid('role_id')->nullable(false);
             $table->string('name')->default('');
             $table->string('phone')->unique()->nullable(false);
@@ -50,7 +50,7 @@ return new class extends Migration
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->ulid('id')->primary()->nullable(false);
-            $table->ulid('user_id')->nullable(false);
+            $table->unsignedBigInteger('user_id')->nullable(false);
             $table->ipAddress('ip_address')->nullable(false);
             $table->json('device_info')->nullable(false);
             $table->text('user_agent')->nullable(false);
