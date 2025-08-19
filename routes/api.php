@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -10,12 +11,14 @@ Route::get('/user', function (Request $request) {
 // v1 user facing APIs
 Route::prefix('v1')->group(function () {
     Route::prefix('auth')->group(function () {
-        Route::post('/login', function () {
+        Route::post('/request-otp', [AuthController::class, 'requestOTP']);
+        Route::post('/verify-otp', action: [AuthController::class, 'verifyOTP']);
+        Route::post('/resend-otp', action: function () {
             return [
-                "message" => "This is the login path"
+                "message" => "This is the resend otp path"
             ];
         });
-        Route::post('/logout', function () {
+        Route::post('/logout', action: function () {
             return [
                 "message" => "This is the logout path"
             ];

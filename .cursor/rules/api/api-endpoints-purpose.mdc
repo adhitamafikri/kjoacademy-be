@@ -27,8 +27,9 @@ Here are the list:
 
 ### Student Auth
 
-- POST `/auth/request-otp` -> Request OTP code for login
-- POST `/auth/verify-otp` -> Verify OTP code for login
+- POST `/auth/request-otp` -> Request OTP code
+- POST `/auth/verify-otp` -> Verify OTP code
+- POST `/auth/resend-otp` -> Resend OTP code
 - POST `/auth/logout` -> Logout
 - POST `/auth/refresh-session` -> Refresh token endpoint, keeping the user logged in
 
@@ -59,8 +60,9 @@ Here are the list:
 
 ### Admin Auth
 
-- POST `/auth/request-otp` -> Request OTP code for login
-- POST `/auth/verify-otp` -> Verify OTP code for login
+- POST `/auth/request-otp` -> Request OTP code
+- POST `/auth/verify-otp` -> Verify OTP code
+- POST `/auth/resend-otp` -> Resend OTP code
 - POST `/auth/logout` -> Logout
 - POST `/auth/refresh-session` -> Refresh token endpoint, keeping the user logged in
 

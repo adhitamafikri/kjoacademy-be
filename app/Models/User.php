@@ -2,17 +2,15 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
-use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, HasUlids, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -50,16 +48,20 @@ class User extends Authenticatable
         'onboarding_started_at' => 'datetime',
     ];
 
-    // Role relationship
+    // Relationships
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id');
     }
 
-    // Relationships
     public function enrollments()
     {
         return $this->hasMany(Enrollment::class, 'user_id');
+    }
+
+    public function otps()
+    {
+        return $this->hasMany(OTP::class, 'user_id');
     }
 
     public function activeEnrollments()
@@ -75,8 +77,8 @@ class User extends Authenticatable
     public function enrolledCourses()
     {
         return $this->belongsToMany(Course::class, 'enrollments', 'user_id', 'course_id')
-                    ->withPivot(['status', 'progress_percentage', 'enrolled_at', 'completed_at'])
-                    ->withTimestamps();
+            ->withPivot(['status', 'progress_percentage', 'enrolled_at', 'completed_at'])
+            ->withTimestamps();
     }
 
     // Progress relationships
@@ -115,7 +117,7 @@ class User extends Authenticatable
     public function getOnboardingProgressPercentage()
     {
         $onboardingCategory = CourseCategory::where('slug', 'kjoacademy-onboarding')->first();
-        
+
         if (!$onboardingCategory) {
             return 0;
         }
