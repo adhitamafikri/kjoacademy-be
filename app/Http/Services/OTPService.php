@@ -23,7 +23,7 @@ class OTPService
             'user_id' => $user->id,
             'otp_code' => (string) random_int($min, $max), // cryptographically secure
             'purpose' => $purpose,
-            'expires_at' => now()->addMinutes(5),
+            'expires_at' => now()->addMinutes(3),
         ];
         $otp = $this->otpRepository->create(...$payload);
         return $otp;

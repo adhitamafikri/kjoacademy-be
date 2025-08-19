@@ -37,6 +37,10 @@ class AuthService
             return null;
         }
 
+        // If there's still an active OTP, return an error response
+        $active_otp = $this->otpService->getActiveOTP($user->id, TokenPurpose::from($request->purpose));
+        if ($active_otp !== null) throw new Exception('You have an active OTP. Please wait for it to expire before requesting a new one.');
+
         // Generate OTP Code and save it to the database
         $request->validate([
             'purpose' => [new Enum(TokenPurpose::class),]
