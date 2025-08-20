@@ -1,0 +1,22 @@
+---
+description: The Admin Course Category Form (Create and Edit)
+alwaysApply: true
+---
+
+# Create Category Form in Admin Dashboard
+
+## Admin Page Depiction
+
+The page should have this fields. The data would be sent as a FormData by the frontend project.
+
+### Fields
+
+- Title: required
+- Slug: required
+- Description: required
+- There is no courses count field, because new category should have 0 courses assigned
+
+## Actions
+
+- Create, fix, and maintain the category creation and update logic in `CourseCategoryController`. Don't forget to keep the controller lean. Utilize the `Services` and `Repositories`
+- Validate the request body before proceeding with any query and mutation
