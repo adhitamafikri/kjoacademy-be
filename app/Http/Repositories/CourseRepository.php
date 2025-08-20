@@ -33,4 +33,9 @@ class CourseRepository
         $perPage = $query['perPage'] ?? DEFAULT_PER_PAGE;
         return $user->enrolledCourses()->simplePaginate($perPage);
     }
+
+    public function create(array $data)
+    {
+        return Course::create($data);
+    }
 }

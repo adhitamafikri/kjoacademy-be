@@ -63,6 +63,7 @@ Route::prefix('v1/admin')->group(function () {
     Route::middleware('auth:sanctum')->prefix('courses')->group(function () {
         Route::get('/', [CourseController::class, 'getCourses']);
         Route::post('/', [CourseController::class, 'createCourse']);
+        Route::get('/categories/{slug}', [CourseController::class, 'getCoursesByCategory']);
         Route::get('/{slug}', [CourseController::class, 'getCourseBySlug']);
         Route::put('/{slug}', [CourseController::class, 'updateCourse']);
         Route::delete('/{slug}', [CourseController::class, 'deleteCourse']);

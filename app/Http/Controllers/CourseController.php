@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\CreateCourseRequest;
 use App\Http\Services\CourseService;
 use Exception;
 
@@ -70,6 +71,22 @@ class CourseController extends Controller
             return response()->json([
                 "data" => $result,
             ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                "message" => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function createCourse(CreateCourseRequest $request)
+    {
+        try {
+            $result = $this->courseService->createCourse($request->validated());
+
+            return response()->json([
+                "message" => "Course created successfully",
+                "data" => $result,
+            ], 201);
         } catch (Exception $e) {
             return response()->json([
                 "message" => $e->getMessage(),

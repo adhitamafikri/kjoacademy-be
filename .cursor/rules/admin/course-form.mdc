@@ -1,0 +1,22 @@
+---
+description: The Admin Course Form (Create and Edit)
+alwaysApply: false
+---
+
+# Form for Course Creation and Edit in Admin Dashboard
+
+## Depiction of the page
+
+The page should have this fields. The data would be sent as a FormData by the frontend project
+
+### Fields
+
+- title: required
+- slug: required
+- description: required
+- thumbnail url: required
+
+## Actions
+
+- Create, fix, and maintain the course creation, update, and deletion logic in `CourseController`. Don't forget to keep the controller lean. Utilize the `Services` and `Repositories`
+- Validate the request body with the Laravel Request validation feature, before proceeding with any query and mutation

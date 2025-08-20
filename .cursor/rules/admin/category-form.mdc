@@ -3,7 +3,7 @@ description: The Admin Course Category Form (Create and Edit)
 alwaysApply: true
 ---
 
-# Create Category Form in Admin Dashboard
+# Create and Update Category Form in Admin Dashboard
 
 ## Admin Page Depiction
 
@@ -18,5 +18,5 @@ The page should have this fields. The data would be sent as a FormData by the fr
 
 ## Actions
 
-- Create, fix, and maintain the category creation and update logic in `CourseCategoryController`. Don't forget to keep the controller lean. Utilize the `Services` and `Repositories`
+- Create, fix, and maintain the category creation, update, and deletion logic in `CourseCategoryController`. Don't forget to keep the controller lean. Utilize the `Services` and `Repositories`
 - Validate the request body with the Laravel Request validation feature, before proceeding with any query and mutation
