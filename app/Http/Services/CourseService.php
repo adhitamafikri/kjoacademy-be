@@ -51,4 +51,29 @@ class CourseService
         $result = $this->courseRepository->create($data);
         return $result;
     }
+
+    public function updateCourse(string $slug, array $data)
+    {
+        // Find the course to update
+        $course = $this->courseRepository->findBySlug($slug);
+        if (!$course) {
+            throw new Exception('Course not found.');
+        }
+
+        // Generate slug if title is being updated and slug is not provided
+        if (isset($data['title']) && empty($data['slug'])) {
+            $data['slug'] = Str::slug($data['title']);
+        }
+
+        // Check if new slug already exists (excluding current course)
+        if (isset($data['slug']) && $data['slug'] !== $slug) {
+            $existingCourse = $this->courseRepository->findBySlug($data['slug']);
+            if ($existingCourse) {
+                throw new Exception('A course with this slug already exists.');
+            }
+        }
+
+        $result = $this->courseRepository->update($course, $data);
+        return $result;
+    }
 }

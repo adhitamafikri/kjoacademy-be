@@ -38,4 +38,10 @@ class CourseRepository
     {
         return Course::create($data);
     }
+
+    public function update(Course $course, array $data)
+    {
+        $course->update($data);
+        return $course->fresh();
+    }
 }
