@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Services\CourseCategoryService;
 use App\Http\Requests\CreateCourseCategoryRequest;
+use App\Http\Requests\UpdateCourseCategoryRequest;
 use Exception;
 
 class CourseCategoryController extends Controller
@@ -49,7 +50,7 @@ class CourseCategoryController extends Controller
     {
         try {
             $result = $this->courseCategoryService->createCategory($request->validated());
-            
+
             return response()->json([
                 "message" => "Course category created successfully",
                 "data" => $result,
@@ -61,6 +62,21 @@ class CourseCategoryController extends Controller
         }
     }
 
-    public function updateCategory(Request $request) {}
+    public function updateCategory(UpdateCourseCategoryRequest $request, string $slug)
+    {
+        try {
+            $result = $this->courseCategoryService->updateCategory($slug, $request->validated());
+
+            return response()->json([
+                "message" => "Course category updated successfully",
+                "data" => $result,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                "message" => $e->getMessage(),
+            ], 404);
+        }
+    }
+
     public function deleteCategory(Request $request) {}
 }

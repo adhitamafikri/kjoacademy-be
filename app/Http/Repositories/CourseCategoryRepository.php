@@ -23,4 +23,10 @@ class CourseCategoryRepository
     {
         return CourseCategory::create($data);
     }
+
+    public function update(CourseCategory $category, array $data)
+    {
+        $category->update($data);
+        return $category->fresh();
+    }
 }

@@ -39,4 +39,29 @@ class CourseCategoryService
         $result = $this->courseCategoryRepository->create($data);
         return $result;
     }
+
+    public function updateCategory(string $slug, array $data)
+    {
+        // Find the category to update
+        $category = $this->courseCategoryRepository->findBySlug($slug);
+        if (!$category) {
+            throw new Exception('Course category not found.');
+        }
+
+        // Generate slug if title is being updated and slug is not provided
+        if (isset($data['title']) && empty($data['slug'])) {
+            $data['slug'] = Str::slug($data['title']);
+        }
+
+        // Check if new slug already exists (excluding current category)
+        if (isset($data['slug']) && $data['slug'] !== $slug) {
+            $existingCategory = $this->courseCategoryRepository->findBySlug($data['slug']);
+            if ($existingCategory) {
+                throw new Exception('A category with this slug already exists.');
+            }
+        }
+
+        $result = $this->courseCategoryRepository->update($category, $data);
+        return $result;
+    }
 }

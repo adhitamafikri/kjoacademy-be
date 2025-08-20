@@ -19,4 +19,4 @@ The page should have this fields. The data would be sent as a FormData by the fr
 ## Actions
 
 - Create, fix, and maintain the category creation and update logic in `CourseCategoryController`. Don't forget to keep the controller lean. Utilize the `Services` and `Repositories`
-- Validate the request body before proceeding with any query and mutation
+- Validate the request body with the Laravel Request validation feature, before proceeding with any query and mutation
