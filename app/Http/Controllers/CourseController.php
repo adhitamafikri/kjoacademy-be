@@ -111,4 +111,21 @@ class CourseController extends Controller
             ], $statusCode);
         }
     }
+
+    public function deleteCourse(Request $request, string $slug)
+    {
+        try {
+            $result = $this->courseService->deleteCourse($slug);
+
+            return response()->json([
+                "message" => "Course deleted successfully",
+                "data" => $result,
+            ], 200);
+        } catch (Exception $e) {
+            $statusCode = $e->getMessage() === 'Course not found.' ? 404 : 422;
+            return response()->json([
+                "message" => $e->getMessage(),
+            ], $statusCode);
+        }
+    }
 }

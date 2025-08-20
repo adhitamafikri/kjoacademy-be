@@ -44,4 +44,10 @@ class CourseRepository
         $course->update($data);
         return $course->fresh();
     }
+
+    public function delete(Course $course)
+    {
+        $course->delete();
+        return $course;
+    }
 }

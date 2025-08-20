@@ -76,4 +76,21 @@ class CourseService
         $result = $this->courseRepository->update($course, $data);
         return $result;
     }
+
+    public function deleteCourse(string $slug)
+    {
+        // Find the course to delete
+        $course = $this->courseRepository->findBySlug($slug);
+        if (!$course) {
+            throw new Exception('Course not found.');
+        }
+
+        // Check if course has active enrollments
+        if ($course->enrollment_count > 0) {
+            throw new Exception('Cannot delete course that has active enrollments. Please handle the enrollments first.');
+        }
+
+        $result = $this->courseRepository->delete($course);
+        return $result;
+    }
 }
