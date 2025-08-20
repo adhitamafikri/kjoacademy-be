@@ -19,4 +19,10 @@ class CourseService
         $result = $this->courseRepository->findBySlug($slug);
         return $result;
     }
+
+    public function getCoursesByCategorySlug(string $slug, array $query)
+    {
+        $result = $this->courseRepository->getByCategorySlug($slug, $query);
+        return $result;
+    }
 }

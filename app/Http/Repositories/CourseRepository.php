@@ -2,6 +2,7 @@
 
 namespace App\Http\Repositories;
 
+use App\Models\CourseCategory;
 use App\Models\Course;
 
 const DEFAULT_PER_PAGE = 15;
@@ -17,5 +18,12 @@ class CourseRepository
     public function findBySlug(string $slug)
     {
         return Course::where('slug', $slug)->first();
+    }
+
+    public function getByCategorySlug(string $slug, array $query)
+    {
+        $perPage = $query['perPage'] ?? DEFAULT_PER_PAGE;
+        $category = CourseCategory::where('slug', $slug)->first();
+        return $category->courses()->simplePaginate($perPage);
     }
 }

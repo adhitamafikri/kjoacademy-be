@@ -43,4 +43,18 @@ class CourseController extends Controller
             ], 500);
         }
     }
+
+    public function getCoursesByCategory(Request $request)
+    {
+        try {
+            $result = $this->courseService->getCoursesByCategorySlug($request->slug, $request->query());
+            return response()->json([
+                "data" => $result,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                "message" => $e->getMessage(),
+            ], 500);
+        }
+    }
 }
