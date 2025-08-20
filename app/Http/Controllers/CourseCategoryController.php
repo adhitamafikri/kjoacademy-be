@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Student;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -43,4 +43,8 @@ class CourseCategoryController extends Controller
             ], 500);
         }
     }
+
+    public function createCategory(Request $request) {}
+    public function updateCategory(Request $request) {}
+    public function deleteCategory(Request $request) {}
 }

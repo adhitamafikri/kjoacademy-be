@@ -2,9 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Student\UserController as StudentUserController;
-use App\Http\Controllers\Student\CourseCategoryController as StudentCourseCategoryController;
-use App\Http\Controllers\Student\CourseController as StudentCourseController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\CourseCategoryController;
+use App\Http\Controllers\CourseController;
+
 use App\Http\Middleware\AuthEndpointGuard;
 
 // v1 auth APIs
@@ -28,23 +29,43 @@ Route::prefix('v1/auth')->group(function () {
 // v1 user facing APIs
 Route::prefix('v1')->group(function () {
     Route::middleware('auth:sanctum')->prefix('users')->group(function () {
-        Route::get('/me', [StudentUserController::class, 'getMe']);
+        Route::get('/me', [UserController::class, 'getMe']);
     });
 
     Route::middleware('auth:sanctum')->prefix('categories')->group(function () {
-        Route::get('/', [StudentCourseCategoryController::class, 'getCategories']);
-        Route::get('/{slug}', [StudentCourseCategoryController::class, 'getCategoryBySlug']);
+        Route::get('/', [CourseCategoryController::class, 'getCategories']);
+        Route::get('/{slug}', [CourseCategoryController::class, 'getCategoryBySlug']);
     });
 
     Route::middleware('auth:sanctum')->prefix('courses')->group(function () {
-        Route::get('/', [StudentCourseController::class, 'getCourses']);
-        Route::get('/me', [StudentCourseController::class, 'getMyCourses']);
-        Route::get('/{slug}', [StudentCourseController::class, 'getCourseBySlug']);
-        Route::get('/categories/{slug}', [StudentCourseController::class, 'getCoursesByCategory']);
+        Route::get('/', [CourseController::class, 'getCourses']);
+        Route::get('/me', [CourseController::class, 'getMyCourses']);
+        Route::get('/{slug}', [CourseController::class, 'getCourseBySlug']);
+        Route::get('/categories/{slug}', [CourseController::class, 'getCoursesByCategory']);
     });
 });
 // v1 user facing APIs:END
 
 // v1 admin facing APIs
-Route::prefix('v1/admin')->group(function () {});
+Route::prefix('v1/admin')->group(function () {
+    Route::middleware('auth:sanctum')->prefix('users')->group(function () {
+        Route::get('/me', [UserController::class, 'getMe']);
+    });
+
+    Route::middleware('auth:sanctum')->prefix('categories')->group(function () {
+        Route::get('/', [CourseCategoryController::class, 'getCategories']);
+        Route::post('/', [CourseCategoryController::class, 'createCategory']);
+        Route::get('/{slug}', [CourseCategoryController::class, 'getCategoryBySlug']);
+        Route::put('/{slug}', [CourseCategoryController::class, 'updateCategory']);
+        Route::delete('/{slug}', [CourseCategoryController::class, 'deleteCategory']);
+    });
+
+    Route::middleware('auth:sanctum')->prefix('courses')->group(function () {
+        Route::get('/', [CourseController::class, 'getCourses']);
+        Route::post('/', [CourseController::class, 'createCourse']);
+        Route::get('/{slug}', [CourseController::class, 'getCourseBySlug']);
+        Route::put('/{slug}', [CourseController::class, 'updateCourse']);
+        Route::delete('/{slug}', [CourseController::class, 'deleteCourse']);
+    });
+});
 // v1 admin facing APIs:END
