@@ -64,4 +64,21 @@ class CourseCategoryService
         $result = $this->courseCategoryRepository->update($category, $data);
         return $result;
     }
+
+    public function deleteCategory(string $slug)
+    {
+        // Find the category to delete
+        $category = $this->courseCategoryRepository->findBySlug($slug);
+        if (!$category) {
+            throw new Exception('Course category not found.');
+        }
+
+        // Check if category has courses assigned
+        if ($category->courses_count > 0) {
+            throw new Exception('Cannot delete category that has courses assigned. Please reassign or delete the courses first.');
+        }
+
+        $result = $this->courseCategoryRepository->delete($category);
+        return $result;
+    }
 }

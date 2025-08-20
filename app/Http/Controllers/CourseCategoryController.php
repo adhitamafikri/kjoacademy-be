@@ -78,5 +78,20 @@ class CourseCategoryController extends Controller
         }
     }
 
-    public function deleteCategory(Request $request) {}
+    public function deleteCategory(Request $request, string $slug)
+    {
+        try {
+            $result = $this->courseCategoryService->deleteCategory($slug);
+
+            return response()->json([
+                "message" => "Course category deleted successfully",
+                "data" => $result,
+            ], 200);
+        } catch (Exception $e) {
+            $statusCode = $e->getMessage() === 'Course category not found.' ? 404 : 422;
+            return response()->json([
+                "message" => $e->getMessage(),
+            ], $statusCode);
+        }
+    }
 }

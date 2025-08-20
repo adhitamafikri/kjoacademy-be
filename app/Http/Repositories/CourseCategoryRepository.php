@@ -29,4 +29,10 @@ class CourseCategoryRepository
         $category->update($data);
         return $category->fresh();
     }
+
+    public function delete(CourseCategory $category)
+    {
+        $category->delete();
+        return $category;
+    }
 }
