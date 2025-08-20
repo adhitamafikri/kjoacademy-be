@@ -85,8 +85,6 @@ Remember, this project is an API project. A NextJS project will consume these AP
 - Make sure to guard the group with at least the `auth:sanctum` middleware
 - `/v1/auth` is for Student and Admin. `/v1` group is for Student. `/v1/admin` group if for Admin.
 - Each route endpoint/uri should have an action that is defined on their respective Controller.
-  - `app/Http/Controllers/Student` for student's endpoints
-  - `app/Http/Controllers/Admin` for admin's endpoints
 - Keep the Controllers lean by implementing `Services` and `Repositories`
   - Controllers calls the `Services`, process them and return API response
   - `Services` contains the business logic. Each function in the service should return value.
