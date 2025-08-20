@@ -5,7 +5,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Student\UserController as StudentUserController;
 use App\Http\Controllers\Student\CourseCategoryController as StudentCourseCategoryController;
 use App\Http\Controllers\Student\CourseController as StudentCourseController;
-use App\Http\Controllers\Admin\CourseCategoryController as AdminCourseCategoryController;
 use App\Http\Middleware\AuthEndpointGuard;
 
 // v1 auth APIs
@@ -17,28 +16,31 @@ Route::prefix('v1/auth')->group(function () {
         Route::post('/request-otp', [AuthController::class, 'requestOTP']);
         Route::post('/verify-otp', action: [AuthController::class, 'verifyOTP']);
         Route::post('/resend-otp', action: [AuthController::class, 'resendOTP']);
-        Route::post('/logout', action: [AuthController::class, 'logout']);
         Route::post('/refresh-session', [AuthController::class, 'refreshSession']);
+    });
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/logout', action: [AuthController::class, 'logout']);
     });
 });
 // v1 auth APIs:END
 
 // v1 user facing APIs
 Route::prefix('v1')->group(function () {
-    Route::prefix('users')->group(function () {
+    Route::middleware('auth:sanctum')->prefix('users')->group(function () {
         Route::get('/me', [StudentUserController::class, 'getMe']);
     });
 
-    Route::prefix('categories')->group(function () {
+    Route::middleware('auth:sanctum')->prefix('categories')->group(function () {
         Route::get('/', [StudentCourseCategoryController::class, 'getCategories']);
         Route::get('/{slug}', [StudentCourseCategoryController::class, 'getCategoryBySlug']);
     });
 
-    Route::prefix('courses')->group(function () {
+    Route::middleware('auth:sanctum')->prefix('courses')->group(function () {
         Route::get('/', [StudentCourseController::class, 'getCourses']);
+        Route::get('/me', [StudentCourseController::class, 'getMyCourses']);
         Route::get('/{slug}', [StudentCourseController::class, 'getCourseBySlug']);
         Route::get('/categories/{slug}', [StudentCourseController::class, 'getCoursesByCategory']);
-        Route::get('/me', [StudentCourseController::class, 'getMyCourses']);
     });
 });
 // v1 user facing APIs:END

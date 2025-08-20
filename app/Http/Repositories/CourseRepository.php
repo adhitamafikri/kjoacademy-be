@@ -4,6 +4,7 @@ namespace App\Http\Repositories;
 
 use App\Models\CourseCategory;
 use App\Models\Course;
+use App\Models\User;
 
 const DEFAULT_PER_PAGE = 15;
 
@@ -25,5 +26,11 @@ class CourseRepository
         $perPage = $query['perPage'] ?? DEFAULT_PER_PAGE;
         $category = CourseCategory::where('slug', $slug)->first();
         return $category->courses()->simplePaginate($perPage);
+    }
+
+    public function getMyCourses(User $user, array $query)
+    {
+        $perPage = $query['perPage'] ?? DEFAULT_PER_PAGE;
+        return $user->enrolledCourses()->simplePaginate($perPage);
     }
 }

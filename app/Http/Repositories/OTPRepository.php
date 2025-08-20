@@ -23,6 +23,7 @@ class OTPRepository
         return OTP::where('user_id', $user_id)
             ->where('purpose', $purpose)
             ->where('expires_at', '>', now())
+            ->where('verified_at', null)
             ->first();
     }
 }

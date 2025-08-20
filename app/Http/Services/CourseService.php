@@ -2,27 +2,34 @@
 
 namespace App\Http\Services;
 
+use Illuminate\Http\Request;
 use App\Http\Repositories\CourseRepository;
 
 class CourseService
 {
     public function __construct(private CourseRepository $courseRepository) {}
 
-    public function getMany(array $query)
+    public function getMany(Request $request)
     {
-        $result = $this->courseRepository->getMany($query);
+        $result = $this->courseRepository->getMany($request->query());
         return $result;
     }
 
-    public function getCourseBySlug(string $slug)
+    public function getCourseBySlug(Request $request)
     {
-        $result = $this->courseRepository->findBySlug($slug);
+        $result = $this->courseRepository->findBySlug($request->slug);
         return $result;
     }
 
-    public function getCoursesByCategorySlug(string $slug, array $query)
+    public function getCoursesByCategorySlug(Request $request)
     {
-        $result = $this->courseRepository->getByCategorySlug($slug, $query);
+        $result = $this->courseRepository->getByCategorySlug($request->slug, $request->query());
+        return $result;
+    }
+
+    public function getMyCourses(Request $request)
+    {
+        $result = $this->courseRepository->getMyCourses($request->user(), $request->query());
         return $result;
     }
 }

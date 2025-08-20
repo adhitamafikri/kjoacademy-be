@@ -13,7 +13,6 @@ class CourseCategoryController extends Controller
 
     public function getCategories(Request $request)
     {
-        // dd($request);
         try {
             $result = $this->courseCategoryService->getCategories($request);
             return response()->json([
