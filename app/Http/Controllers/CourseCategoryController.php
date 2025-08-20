@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Services\CourseCategoryService;
+use App\Http\Requests\CreateCourseCategoryRequest;
 use Exception;
 
 class CourseCategoryController extends Controller
@@ -44,7 +45,22 @@ class CourseCategoryController extends Controller
         }
     }
 
-    public function createCategory(Request $request) {}
+    public function createCategory(CreateCourseCategoryRequest $request)
+    {
+        try {
+            $result = $this->courseCategoryService->createCategory($request->validated());
+            
+            return response()->json([
+                "message" => "Course category created successfully",
+                "data" => $result,
+            ], 201);
+        } catch (Exception $e) {
+            return response()->json([
+                "message" => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function updateCategory(Request $request) {}
     public function deleteCategory(Request $request) {}
 }

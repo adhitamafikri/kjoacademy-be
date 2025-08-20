@@ -18,4 +18,9 @@ class CourseCategoryRepository
     {
         return CourseCategory::where('slug', $slug)->first();
     }
+
+    public function create(array $data)
+    {
+        return CourseCategory::create($data);
+    }
 }
