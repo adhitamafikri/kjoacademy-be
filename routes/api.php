@@ -63,6 +63,9 @@ Route::prefix('v1/admin')->group(function () {
 
         Route::apiResource('modules', Api\Admin\CourseModuleController::class)
             ->parameters(['modules' => 'id']);
+
+        Route::apiResource('lessons', Api\Admin\CourseLessonController::class)
+            ->parameters(['lessons' => 'id']);
     });
 });
 // v1 admin facing APIs:END
