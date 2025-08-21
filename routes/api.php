@@ -1,11 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Api;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CourseCategoryController;
 use App\Http\Controllers\CourseController;
-
 use App\Http\Middleware\AuthEndpointGuard;
 
 // v1 auth APIs
@@ -14,14 +13,14 @@ Route::prefix('v1/auth')->group(function () {
     Route::group([
         'middleware' => ['throttle:5,1', AuthEndpointGuard::class],
     ], function () {
-        Route::post('/request-otp', [AuthController::class, 'requestOTP']);
-        Route::post('/verify-otp', action: [AuthController::class, 'verifyOTP']);
-        Route::post('/resend-otp', action: [AuthController::class, 'resendOTP']);
-        Route::post('/refresh-session', [AuthController::class, 'refreshSession']);
+        Route::post('/request-otp', [Api\AuthController::class, 'requestOTP']);
+        Route::post('/verify-otp', action: [Api\AuthController::class, 'verifyOTP']);
+        Route::post('/resend-otp', action: [Api\AuthController::class, 'resendOTP']);
+        Route::post('/refresh-session', [Api\AuthController::class, 'refreshSession']);
     });
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/logout', action: [AuthController::class, 'logout']);
+        Route::post('/logout', action: [Api\AuthController::class, 'logout']);
     });
 });
 // v1 auth APIs:END
@@ -48,25 +47,27 @@ Route::prefix('v1')->group(function () {
 
 // v1 admin facing APIs
 Route::prefix('v1/admin')->group(function () {
-    Route::middleware('auth:sanctum')->prefix('users')->group(function () {
-        Route::get('/me', [UserController::class, 'getMe']);
-    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::prefix('users')->group(function () {
+            Route::get('/me', [UserController::class, 'getMe']);
+        });
 
-    Route::middleware('auth:sanctum')->prefix('categories')->group(function () {
-        Route::get('/', [CourseCategoryController::class, 'getCategories']);
-        Route::post('/', [CourseCategoryController::class, 'createCategory']);
-        Route::get('/{slug}', [CourseCategoryController::class, 'getCategoryBySlug']);
-        Route::put('/{slug}', [CourseCategoryController::class, 'updateCategory']);
-        Route::delete('/{slug}', [CourseCategoryController::class, 'deleteCategory']);
-    });
+        Route::prefix('categories')->group(function () {
+            Route::get('/', [CourseCategoryController::class, 'getCategories']);
+            Route::post('/', [CourseCategoryController::class, 'createCategory']);
+            Route::get('/{slug}', [CourseCategoryController::class, 'getCategoryBySlug']);
+            Route::put('/{slug}', [CourseCategoryController::class, 'updateCategory']);
+            Route::delete('/{slug}', [CourseCategoryController::class, 'deleteCategory']);
+        });
 
-    Route::middleware('auth:sanctum')->prefix('courses')->group(function () {
-        Route::get('/', [CourseController::class, 'getCourses']);
-        Route::post('/', [CourseController::class, 'createCourse']);
-        Route::get('/categories/{slug}', [CourseController::class, 'getCoursesByCategory']);
-        Route::get('/{slug}', [CourseController::class, 'getCourseBySlug']);
-        Route::put('/{slug}', [CourseController::class, 'updateCourse']);
-        Route::delete('/{slug}', [CourseController::class, 'deleteCourse']);
+        Route::prefix('courses')->group(function () {
+            Route::get('/', [CourseController::class, 'getCourses']);
+            Route::post('/', [CourseController::class, 'createCourse']);
+            Route::get('/categories/{slug}', [CourseController::class, 'getCoursesByCategory']);
+            Route::get('/{slug}', [CourseController::class, 'getCourseBySlug']);
+            Route::put('/{slug}', [CourseController::class, 'updateCourse']);
+            Route::delete('/{slug}', [CourseController::class, 'deleteCourse']);
+        });
     });
 });
 // v1 admin facing APIs:END

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Http\Request;
 use App\Http\Repositories\UserRepository;
@@ -10,12 +11,20 @@ use App\Http\Services\AuthService;
 
 class AuthController extends Controller
 {
-
     public function __construct(
         private AuthService $authService,
         private OTPService $otpService,
         private UserRepository $userRepository
     ) {}
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index() {}
+    public function store(Request $request) {}
+    public function show(string $id) {}
+    public function update(Request $request, string $id) {}
+    public function destroy(string $id) {}
 
     public function requestOTP(Request $request)
     {
