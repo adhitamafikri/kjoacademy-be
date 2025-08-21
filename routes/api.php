@@ -24,16 +24,16 @@ Route::prefix('v1/auth')->group(function () {
 
 // v1 user facing APIs
 Route::prefix('v1')->group(function () {
-    Route::middleware('auth:sanctum')->prefix('users')->group(function () {
+    Route::middleware(['auth:sanctum', 'role:student'])->prefix('users')->group(function () {
         Route::get('/me', [Api\UserController::class, 'getMe']);
     });
 
-    Route::middleware('auth:sanctum')->prefix('categories')->group(function () {
+    Route::middleware(['auth:sanctum', 'role:student'])->prefix('categories')->group(function () {
         Route::get('/', [Api\Student\CourseCategoryController::class, 'index']);
         Route::get('/{slug}', [Api\Student\CourseCategoryController::class, 'show']);
     });
 
-    Route::middleware('auth:sanctum')->prefix('courses')->group(function () {
+    Route::middleware(['auth:sanctum', 'role:student'])->prefix('courses')->group(function () {
         Route::get('/', [Api\Student\CourseController::class, 'index']);
         Route::get('/me', [Api\Student\CourseController::class, 'getMyCourses']);
         Route::get('/{slug}', [Api\Student\CourseController::class, 'show']);
@@ -44,7 +44,7 @@ Route::prefix('v1')->group(function () {
 
 // v1 admin facing APIs
 Route::prefix('v1/admin')->group(function () {
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
         Route::prefix('users')->group(function () {
             Route::get('/me', [Api\UserController::class, 'getMe']);
         });
