@@ -20,5 +20,5 @@ This field would display a table containing the list of Course Categories. Here 
 
 ## Actions
 
-- Create, fix, and maintain the logic in `CourseCategoryController`. Don't forget to keep the controller lean. Utilize the `Services` and `Repositories`
+- Create, fix, and maintain the logic in `app/Http/Controllers/Api/Admin/CourseCategoryController`. Don't forget to keep the controller lean. Utilize the `Services` and `Repositories`
 - Validate the request body before proceeding with any query and mutation

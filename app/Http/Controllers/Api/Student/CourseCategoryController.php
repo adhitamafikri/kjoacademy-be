@@ -11,9 +11,6 @@ class CourseCategoryController extends Controller
 {
     public function __construct(private CourseCategoryService $courseCategoryService) {}
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         try {
