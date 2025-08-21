@@ -31,7 +31,7 @@ class UpdateCourseCategoryRequest extends FormRequest
                 'nullable',
                 'string',
                 'max:255',
-                Rule::unique('course_categories', 'slug')->ignore($slug, 'slug')
+                // Rule::unique('course_categories', 'slug')->ignore($slug, 'slug')
             ],
             'description' => 'sometimes|required|string|max:1000',
         ];

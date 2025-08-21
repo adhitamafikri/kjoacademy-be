@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -13,7 +13,10 @@ class CourseCategoryController extends Controller
 {
     public function __construct(private CourseCategoryService $courseCategoryService) {}
 
-    public function getCategories(Request $request)
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
     {
         try {
             $result = $this->courseCategoryService->getCategories($request);
@@ -27,26 +30,7 @@ class CourseCategoryController extends Controller
         }
     }
 
-    public function getCategoryBySlug(Request $request)
-    {
-        try {
-            $result = $this->courseCategoryService->getCategoryBySlug($request->slug);
-            if ($result === null) {
-                return response()->json([
-                    "message" => "Course Category not found",
-                ], 404);
-            }
-            return response()->json([
-                "data" => $result,
-            ], 200);
-        } catch (Exception $e) {
-            return response()->json([
-                "message" => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    public function createCategory(CreateCourseCategoryRequest $request)
+    public function store(CreateCourseCategoryRequest $request)
     {
         try {
             $result = $this->courseCategoryService->createCategory($request->validated());
@@ -62,7 +46,26 @@ class CourseCategoryController extends Controller
         }
     }
 
-    public function updateCategory(UpdateCourseCategoryRequest $request, string $slug)
+    public function show(string $slug)
+    {
+        try {
+            $result = $this->courseCategoryService->getCategoryBySlug($slug);
+            if ($result === null) {
+                return response()->json([
+                    "message" => "Course Category not found",
+                ], 404);
+            }
+            return response()->json([
+                "data" => $result,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                "message" => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function update(UpdateCourseCategoryRequest $request, string $slug)
     {
         try {
             $result = $this->courseCategoryService->updateCategory($slug, $request->validated());
@@ -78,11 +81,11 @@ class CourseCategoryController extends Controller
         }
     }
 
-    public function deleteCategory(Request $request, string $slug)
+    public function destroy(string $slug)
     {
+        //
         try {
             $result = $this->courseCategoryService->deleteCategory($slug);
-
             return response()->json([
                 "message" => "Course category deleted successfully",
                 "data" => $result,

@@ -2,8 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api;
+use App\Http\Controllers\Student;
+use App\Http\Controllers\Admin;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\CourseCategoryController;
 use App\Http\Controllers\CourseController;
 use App\Http\Middleware\AuthEndpointGuard;
 
@@ -32,8 +33,8 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::middleware('auth:sanctum')->prefix('categories')->group(function () {
-        Route::get('/', [CourseCategoryController::class, 'getCategories']);
-        Route::get('/{slug}', [CourseCategoryController::class, 'getCategoryBySlug']);
+        Route::get('/', [Student\CourseCategoryController::class, 'getCategories']);
+        Route::get('/{slug}', [Student\CourseCategoryController::class, 'getCategoryBySlug']);
     });
 
     Route::middleware('auth:sanctum')->prefix('courses')->group(function () {
@@ -52,13 +53,8 @@ Route::prefix('v1/admin')->group(function () {
             Route::get('/me', [UserController::class, 'getMe']);
         });
 
-        Route::prefix('categories')->group(function () {
-            Route::get('/', [CourseCategoryController::class, 'getCategories']);
-            Route::post('/', [CourseCategoryController::class, 'createCategory']);
-            Route::get('/{slug}', [CourseCategoryController::class, 'getCategoryBySlug']);
-            Route::put('/{slug}', [CourseCategoryController::class, 'updateCategory']);
-            Route::delete('/{slug}', [CourseCategoryController::class, 'deleteCategory']);
-        });
+        Route::apiResource('categories', Admin\CourseCategoryController::class)
+            ->parameters(['categories' => 'slug']);
 
         Route::prefix('courses')->group(function () {
             Route::get('/', [CourseController::class, 'getCourses']);
