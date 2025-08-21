@@ -27,7 +27,7 @@ Route::prefix('v1/auth')->group(function () {
 // v1 user facing APIs
 Route::prefix('v1')->group(function () {
     Route::middleware('auth:sanctum')->prefix('users')->group(function () {
-        Route::get('/me', [UserController::class, 'getMe']);
+        Route::get('/me', [Api\UserController::class, 'getMe']);
     });
 
     Route::middleware('auth:sanctum')->prefix('categories')->group(function () {
@@ -48,7 +48,7 @@ Route::prefix('v1')->group(function () {
 Route::prefix('v1/admin')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::prefix('users')->group(function () {
-            Route::get('/me', [UserController::class, 'getMe']);
+            Route::get('/me', [Api\UserController::class, 'getMe']);
         });
 
         Route::apiResource('categories', Api\Admin\CourseCategoryController::class)
