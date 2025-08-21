@@ -2,8 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api;
-use App\Http\Controllers\Student;
-use App\Http\Controllers\Admin;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CourseController;
 use App\Http\Middleware\AuthEndpointGuard;
@@ -33,8 +31,8 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::middleware('auth:sanctum')->prefix('categories')->group(function () {
-        Route::get('/', [Student\CourseCategoryController::class, 'getCategories']);
-        Route::get('/{slug}', [Student\CourseCategoryController::class, 'getCategoryBySlug']);
+        Route::get('/', [Api\Student\CourseCategoryController::class, 'getCategories']);
+        Route::get('/{slug}', [Api\Student\CourseCategoryController::class, 'getCategoryBySlug']);
     });
 
     Route::middleware('auth:sanctum')->prefix('courses')->group(function () {
@@ -53,7 +51,7 @@ Route::prefix('v1/admin')->group(function () {
             Route::get('/me', [UserController::class, 'getMe']);
         });
 
-        Route::apiResource('categories', Admin\CourseCategoryController::class)
+        Route::apiResource('categories', Api\Admin\CourseCategoryController::class)
             ->parameters(['categories' => 'slug']);
 
         Route::prefix('courses')->group(function () {
