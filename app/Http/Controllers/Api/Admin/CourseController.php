@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -11,9 +11,10 @@ use Exception;
 
 class CourseController extends Controller
 {
+
     public function __construct(private CourseService $courseService) {}
 
-    public function getCourses(Request $request)
+    public function index(Request $request)
     {
         try {
             $result = $this->courseService->getMany($request);
@@ -27,59 +28,7 @@ class CourseController extends Controller
         }
     }
 
-    public function getCourseBySlug(Request $request)
-    {
-        try {
-            $result = $this->courseService->getCourseBySlug($request);
-            if ($result === null) {
-                return response()->json([
-                    "message" => "Course not found",
-                ], 404);
-            }
-            return response()->json([
-                "data" => $result,
-            ], 200);
-        } catch (Exception $e) {
-            return response()->json([
-                "message" => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    public function getCoursesByCategory(Request $request)
-    {
-        try {
-            $result = $this->courseService->getCoursesByCategorySlug($request);
-            return response()->json([
-                "data" => $result,
-            ], 200);
-        } catch (Exception $e) {
-            return response()->json([
-                "message" => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    public function getMyCourses(Request $request)
-    {
-        try {
-            $result = $this->courseService->getMyCourses($request);
-            if ($result === null) {
-                return response()->json([
-                    "message" => "You have not enrolled in any course",
-                ], 404);
-            }
-            return response()->json([
-                "data" => $result,
-            ], 200);
-        } catch (Exception $e) {
-            return response()->json([
-                "message" => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    public function createCourse(CreateCourseRequest $request)
+    public function store(CreateCourseRequest $request)
     {
         try {
             $result = $this->courseService->createCourse($request->validated());
@@ -95,7 +44,26 @@ class CourseController extends Controller
         }
     }
 
-    public function updateCourse(UpdateCourseRequest $request, string $slug)
+    public function show(string $slug)
+    {
+        try {
+            $result = $this->courseService->getCourseBySlug($slug);
+            if ($result === null) {
+                return response()->json([
+                    "message" => "Course not found",
+                ], 404);
+            }
+            return response()->json([
+                "data" => $result,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                "message" => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function update(UpdateCourseRequest $request, string $slug)
     {
         try {
             $result = $this->courseService->updateCourse($slug, $request->validated());
@@ -112,7 +80,7 @@ class CourseController extends Controller
         }
     }
 
-    public function deleteCourse(Request $request, string $slug)
+    public function destroy(string $slug)
     {
         try {
             $result = $this->courseService->deleteCourse($slug);
@@ -126,6 +94,20 @@ class CourseController extends Controller
             return response()->json([
                 "message" => $e->getMessage(),
             ], $statusCode);
+        }
+    }
+
+    public function getCoursesByCategory(Request $request, string $slug)
+    {
+        try {
+            $result = $this->courseService->getCoursesByCategorySlug($request, $slug);
+            return response()->json([
+                "data" => $result,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                "message" => $e->getMessage(),
+            ], 500);
         }
     }
 }

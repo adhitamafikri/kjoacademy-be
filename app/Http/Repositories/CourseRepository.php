@@ -21,7 +21,7 @@ class CourseRepository
         return Course::where('slug', $slug)->first();
     }
 
-    public function getByCategorySlug(string $slug, array $query)
+    public function getByCategorySlug(array $query, string $slug)
     {
         $perPage = $query['perPage'] ?? DEFAULT_PER_PAGE;
         $category = CourseCategory::where('slug', $slug)->first();

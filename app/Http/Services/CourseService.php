@@ -17,15 +17,15 @@ class CourseService
         return $result;
     }
 
-    public function getCourseBySlug(Request $request)
+    public function getCourseBySlug(string $slug)
     {
-        $result = $this->courseRepository->findBySlug($request->slug);
+        $result = $this->courseRepository->findBySlug($slug);
         return $result;
     }
 
-    public function getCoursesByCategorySlug(Request $request)
+    public function getCoursesByCategorySlug(Request $request, string $slug)
     {
-        $result = $this->courseRepository->getByCategorySlug($request->slug, $request->query());
+        $result = $this->courseRepository->getByCategorySlug($request->query(), $slug);
         return $result;
     }
 

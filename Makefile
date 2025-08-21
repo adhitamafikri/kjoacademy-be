@@ -1,4 +1,4 @@
-.PHONY: mysql_up mysql_down mysql_logs dev
+.PHONY: mysql_up mysql_down mysql_logs dev route_list
 
 mysql_up:
 	docker compose up -d mysql
@@ -11,3 +11,6 @@ mysql_logs:
 
 dev:
 	php artisan serve --host=api.kjoacademy-lms.localhost --port=8000
+
+route_list:
+	php artisan route:list

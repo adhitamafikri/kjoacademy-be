@@ -2,8 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\CourseController;
 use App\Http\Middleware\AuthEndpointGuard;
 
 // v1 auth APIs
@@ -31,15 +29,15 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::middleware('auth:sanctum')->prefix('categories')->group(function () {
-        Route::get('/', [Api\Student\CourseCategoryController::class, 'getCategories']);
-        Route::get('/{slug}', [Api\Student\CourseCategoryController::class, 'getCategoryBySlug']);
+        Route::get('/', [Api\Student\CourseCategoryController::class, 'index']);
+        Route::get('/{slug}', [Api\Student\CourseCategoryController::class, 'show']);
     });
 
     Route::middleware('auth:sanctum')->prefix('courses')->group(function () {
-        Route::get('/', [CourseController::class, 'getCourses']);
-        Route::get('/me', [CourseController::class, 'getMyCourses']);
-        Route::get('/{slug}', [CourseController::class, 'getCourseBySlug']);
-        Route::get('/categories/{slug}', [CourseController::class, 'getCoursesByCategory']);
+        Route::get('/', [Api\Student\CourseController::class, 'index']);
+        Route::get('/me', [Api\Student\CourseController::class, 'getMyCourses']);
+        Route::get('/{slug}', [Api\Student\CourseController::class, 'show']);
+        Route::get('/categories/{slug}', [Api\Student\CourseController::class, 'getCoursesByCategory']);
     });
 });
 // v1 user facing APIs:END
@@ -55,12 +53,12 @@ Route::prefix('v1/admin')->group(function () {
             ->parameters(['categories' => 'slug']);
 
         Route::prefix('courses')->group(function () {
-            Route::get('/', [CourseController::class, 'getCourses']);
-            Route::post('/', [CourseController::class, 'createCourse']);
-            Route::get('/categories/{slug}', [CourseController::class, 'getCoursesByCategory']);
-            Route::get('/{slug}', [CourseController::class, 'getCourseBySlug']);
-            Route::put('/{slug}', [CourseController::class, 'updateCourse']);
-            Route::delete('/{slug}', [CourseController::class, 'deleteCourse']);
+            Route::get('/', [Api\Admin\CourseController::class, 'index']);
+            Route::post('/', [Api\Admin\CourseController::class, 'store']);
+            Route::get('/categories/{slug}', [Api\Admin\CourseController::class, 'getCoursesByCategory']);
+            Route::get('/{slug}', [Api\Admin\CourseController::class, 'show']);
+            Route::put('/{slug}', [Api\Admin\CourseController::class, 'update']);
+            Route::delete('/{slug}', [Api\Admin\CourseController::class, 'destroy']);
         });
     });
 });
