@@ -60,6 +60,9 @@ Route::prefix('v1/admin')->group(function () {
             Route::put('/{slug}', [Api\Admin\CourseController::class, 'update']);
             Route::delete('/{slug}', [Api\Admin\CourseController::class, 'destroy']);
         });
+
+        Route::apiResource('modules', Api\Admin\CourseModuleController::class)
+            ->parameters(['modules' => 'id']);
     });
 });
 // v1 admin facing APIs:END
