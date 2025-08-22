@@ -43,10 +43,11 @@ class AuthController extends Controller
     public function verifyOTP(Request $request)
     {
         try {
-            [$message, $accessToken] = $this->authService->verifyOTP($request);
+            [$message, $accessToken, $userData] = $this->authService->verifyOTP($request);
             return response()->json([
                 "message" => $message,
                 "access_token" => $accessToken,
+                "user" => $userData,
             ], 200);
         } catch (Exception $e) {
             return response()->json([

@@ -72,14 +72,21 @@ class AuthService
 
             // create a new token
             $user = $active_otp->user;
+            $role = $user->role;
             $accessToken = $this->createAccessToken(
                 $user,
                 'student-login-token',
                 ['*'],
                 now()->addMinutes(15)
             );
+            $userData = [
+                "name" => $user->name,
+                "phone" => $user->phone,
+                "email" => $user->email,
+                "role" => $role->name,
+            ];
 
-            return ['OTP verified successfully', $accessToken];
+            return ['OTP verified successfully', $accessToken, $userData];
         }
     }
 
