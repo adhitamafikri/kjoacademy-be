@@ -80,6 +80,7 @@ class AuthService
                 now()->addMinutes(15)
             );
             $userData = [
+                "id" => $user->id,
                 "name" => $user->name,
                 "phone" => $user->phone,
                 "email" => $user->email,
