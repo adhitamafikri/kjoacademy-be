@@ -2,13 +2,97 @@
 
 namespace App\Http\Services;
 
+use DateTimeInterface;
+use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Enum;
 use App\Constants\TokenPurpose;
+use App\Http\Repositories\UserRepository;
 use App\Http\Repositories\OTPRepository;
 use App\Models\User;
 
 class OTPService
 {
-    public function __construct(private OTPRepository $otpRepository) {}
+    public function __construct(
+        private OTPRepository $otpRepository,
+        private UserRepository $userRepository
+    ) {}
+
+    public function requestOTP(Request $request)
+    {
+        /**
+         * @TODO: Implement the request OTP logic
+         * 1. Look up the phone number in the 'users' table
+         * 2. If the phone number is not found, proceed to lookup for the phone number in the given Google Sheet containing KJO Academy's members
+         *  2.1. If the phone number is not found in the Google Sheet, return an error response
+         *  2.2. If the phone number is found in the Google Sheet, proceed to create a new user record in the 'users' table
+         * 3. Generate OTP
+         * 4. Send OTP to the user's phone number
+         * 5. Return a success response
+         */
+        $user = $this->userRepository->findByPhone($request->phone);
+
+        // Lookup the user in the Google Sheet - TBD
+        // Save the user to the database - TBD
+
+        // IF NOT FOUND, return an error response
+        if (!$user) {
+            return null;
+        }
+
+        // If there's still an active OTP, return an error response
+        $active_otp = $this->getActiveOTP($user->id, TokenPurpose::from($request->purpose));
+        if ($active_otp !== null) throw new Exception('You have an active OTP. Please wait for it to expire before requesting a new one.');
+
+        // Generate OTP Code and save it to the database
+        $request->validate([
+            'purpose' => [new Enum(TokenPurpose::class),]
+        ]);
+        $otp = $this->generateNumericOTP($user, TokenPurpose::from($request->purpose));
+        // Send OTP to the user's phone number
+        $this->sendOTP($user, $request->phone, $otp['otp_code']);
+
+        return 'OTP sent successfully';
+    }
+
+    public function verifyOTP(Request $request)
+    {
+        $user = $this->userRepository->findByPhone($request->phone);
+        $active_otp = $this->getActiveOTP($user->id, TokenPurpose::from($request->purpose));
+
+        // OTP not found
+        if ($active_otp === null) throw new Exception('OTP code not found');
+        // OTP found - expired
+        if ($active_otp->expires_at < now()) throw new Exception('OTP code expired');
+        // OTP found - already verified
+        if ($active_otp->verified_at !== null) throw new Exception('OTP already verified');
+
+        // OTP found - Will verify
+        if ($active_otp->expires_at > now() && $active_otp->verified_at === null) {
+            // verify the OTP
+            $active_otp->verified_at = now();
+            $active_otp->save();
+
+            // create a new token
+            $user = $active_otp->user;
+            $role = $user->role;
+            $accessToken = $this->createAccessToken(
+                $user,
+                $request->purpose,
+                ['*'],
+                now()->addMinutes(15)
+            );
+            $userData = [
+                "id" => $user->id,
+                "name" => $user->name,
+                "phone" => $user->phone,
+                "email" => $user->email,
+                "role" => $role->name,
+            ];
+
+            return ['OTP verified successfully', $accessToken, $userData];
+        }
+    }
 
     public function generateNumericOTP(User $user, TokenPurpose $purpose, int $length = 6)
     {
@@ -41,5 +125,73 @@ class OTPService
             return $active_otp;
         }
         return null;
+    }
+
+    private function createAccessToken(User $user, string $token_name, array $abilities, DateTimeInterface $expiresAt)
+    {
+        // Revoke any existing tokens for this user to implement single session
+        $user->tokens()->delete();
+        
+        $token = $user->createToken($token_name, $abilities, $expiresAt);
+        return $token->accessToken;
+    }
+
+    public function refreshSession(Request $request)
+    {
+        $user = $request->user();
+        
+        if (!$user) {
+            throw new Exception('User not authenticated');
+        }
+
+        // Revoke the current token
+        $user->token()->revoke();
+        
+        // Create a new token
+        $accessToken = $this->createAccessToken(
+            $user,
+            'refresh_token',
+            ['*'],
+            now()->addMinutes(15)
+        );
+
+        $userData = [
+            "id" => $user->id,
+            "name" => $user->name,
+            "phone" => $user->phone,
+            "email" => $user->email,
+            "role" => $user->role->name,
+        ];
+
+        return ['Session refreshed successfully', $accessToken, $userData];
+    }
+
+    public function resendOTP(Request $request)
+    {
+        $user = $this->userRepository->findByPhone($request->phone);
+
+        if (!$user) {
+            throw new Exception('User not found');
+        }
+
+        // Check if there's an active OTP
+        $active_otp = $this->getActiveOTP($user->id, TokenPurpose::from($request->purpose));
+        
+        if ($active_otp !== null) {
+            // Delete the existing OTP
+            $active_otp->delete();
+        }
+
+        // Generate new OTP
+        $request->validate([
+            'purpose' => [new Enum(TokenPurpose::class),]
+        ]);
+        
+        $otp = $this->generateNumericOTP($user, TokenPurpose::from($request->purpose));
+        
+        // Send OTP to the user's phone number
+        $this->sendOTP($user, $request->phone, $otp['otp_code']);
+
+        return 'OTP resent successfully';
     }
 }

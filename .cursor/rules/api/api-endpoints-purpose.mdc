@@ -82,7 +82,7 @@ Remember, this project is an API project. A NextJS project will consume these AP
 
 - Based on the product requirements, there are not API endpoints that could be called by non-login user yet, except the auth
 - Define the API route at the `routes/api.php`. If it's a new group you have to define a new route group using the `::prefix()`
-- Make sure to guard the group with at least the `auth:sanctum` middleware
+- Make sure to guard the group with at least the `auth:api` middleware
 - `/v1/auth` is for Student and Admin. `/v1` group is for Student. `/v1/admin` group if for Admin.
 - Each route endpoint/uri should have an action that is defined on their respective Controller.
 - Keep the Controllers lean by implementing `Services` and `Repositories`
