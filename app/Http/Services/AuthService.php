@@ -75,7 +75,7 @@ class AuthService
             $role = $user->role;
             $accessToken = $this->createAccessToken(
                 $user,
-                'student-login-token',
+                $request->purpose,
                 ['*'],
                 now()->addMinutes(15)
             );
