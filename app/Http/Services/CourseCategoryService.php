@@ -36,6 +36,8 @@ class CourseCategoryService
             throw new Exception('A category with this slug already exists.');
         }
 
+        $data['courses_count'] = 0;
+
         $result = $this->courseCategoryRepository->create($data);
         return $result;
     }
