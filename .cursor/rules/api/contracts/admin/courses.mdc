@@ -1,0 +1,140 @@
+---
+alwaysApply: false
+---
+
+# Admin Course Categories API Contracts
+
+BASE_URL: `${API_BASE_URL}/v1/admin/courses`
+
+## GET Many Courses
+
+- `GET BASE_URL`
+  - Get many courses data
+  - Each course returned should have `txt:responseBody` shape
+  - Note for backend:
+    - Make sure to use laravel `paginate` to return the list of the `txt:responseBody`
+
+```txt:requestQuery
+{
+  q?: string; // search query
+  perPage?: string; // how many items per page
+  page?: string;  // current page
+}
+```
+
+```txt:responseBody
+{
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  thumbnail_url: string;
+  enrollment_count: number;
+  duration_seconds: number;
+  is_published: boolean;
+  category: {
+    title: string;
+    slug: string;
+  };
+  modules_count: number;
+}
+```
+
+## GET Course By Slug
+
+- `GET BASE_URL/{slug}`
+  - Get course data by slug
+  - The returned course should have `txt:responseBody` shape
+
+```txt:responseBody
+{
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  thumbnail_url: string;
+  enrollment_count: number;
+  duration_seconds: number;
+  is_published: boolean;
+  category: {
+    title: string;
+    slug: string;
+  };
+  modules_count: number;
+}
+```
+
+## POST Create Courses
+
+- `POST BASE_URL`
+  - Create new course data
+  - The returned course should have `txt:responseBody` shape
+
+```txt:requestParam
+slug: string;
+```
+
+```txt:requestBody
+{
+  title: string;
+  slug: string;
+  description: string;
+  is_published: boolean;
+}
+```
+
+```txt:responseBody
+{
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  thumbnail_url: string;
+  enrollment_count: number;
+  duration_seconds: number;
+  is_published: boolean;
+  category: {
+    title: string;
+    slug: string;
+  };
+  modules_count: number;
+}
+```
+
+## PUT Update Courses
+
+- `PUT BASE_URL/{slug}`
+  - Update course data
+  - Could be used to publish/unpublish courses too
+  - The returned course should have `txt:responseBody` shape
+
+```txt:requestParam
+slug: string;
+```
+
+```txt:requestBody
+{
+  title: string;
+  slug: string;
+  description: string;
+  is_published: boolean;
+}
+```
+
+```txt:responseBody
+{
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  thumbnail_url: string;
+  enrollment_count: number;
+  duration_seconds: number;
+  is_published: boolean;
+  category: {
+    title: string;
+    slug: string;
+  };
+  modules_count: number;
+}
+```

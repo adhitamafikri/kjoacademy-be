@@ -1,0 +1,11 @@
+---
+description: Admin API Response Contracts
+alwaysApply: false
+---
+
+# API Contracts
+
+- This is the rule for you to properly create the type definitions for the API responses for the Admin side
+- You need to create the type definition within the `src/types/dto`.
+- Take attention at the BASE_URLs defined for each feature domain. This should be your guide to create the client API definition like `src/api/admin/course-category.ts`
+- Refer to the `.mdc` rules within the `./cursor/rules/api/contracts/admin/` for the complete list of the contracts for each feature domain

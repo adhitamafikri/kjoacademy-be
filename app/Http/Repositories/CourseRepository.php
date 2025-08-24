@@ -13,7 +13,11 @@ class CourseRepository
     public function getMany(array $query)
     {
         $perPage = $query['perPage'] ?? DEFAULT_PER_PAGE;
-        return Course::simplePaginate($perPage);
+        $q = $query['q'] ?? null;
+
+        return Course::when($q !== null, function ($query) use ($q) {
+            $query->where('title', 'like', "%$q%");
+        })->paginate($perPage);
     }
 
     public function findBySlug(string $slug)
@@ -25,13 +29,13 @@ class CourseRepository
     {
         $perPage = $query['perPage'] ?? DEFAULT_PER_PAGE;
         $category = CourseCategory::where('slug', $slug)->first();
-        return $category->courses()->simplePaginate($perPage);
+        return $category->courses()->paginate($perPage);
     }
 
     public function getMyCourses(User $user, array $query)
     {
         $perPage = $query['perPage'] ?? DEFAULT_PER_PAGE;
-        return $user->enrolledCourses()->simplePaginate($perPage);
+        return $user->enrolledCourses()->paginate($perPage);
     }
 
     public function create(array $data)

@@ -1,0 +1,109 @@
+---
+alwaysApply: false
+---
+
+# Admin Course Categories API Contracts
+
+BASE_URL: `${API_BASE_URL}/v1/admin/categories`
+
+## GET Many Course Categories
+
+- `GET BASE_URL`
+  - Get many course categories data
+  - Each course category returned should have `txt:responseBody` shape
+  - Note for backend:
+    - Make sure to use laravel `paginate` to return the list of the `txt:responseBody`
+
+```txt:requestQuery
+{
+  q?: string; // search query
+  perPage?: string; // how many items per page
+  page?: string;  // current page
+}
+```
+
+```txt:responseBody
+{
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  courses_count: string;
+  created_at: string;
+  updated_at: string;
+}
+```
+
+## GET Course Category By Slug
+
+- `GET BASE_URL/{slug}`
+  - Get course category data by slug
+  - The returned course category should have `txt:responseBody` shape
+
+```txt:responseBody
+{
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  courses_count: string;
+  created_at: string;
+  updated_at: string;
+}
+```
+
+## POST Create Course Category
+
+- `POST BASE_URL`
+  - Create new course category
+  - The returned course category should have `txt:responseBody` shape
+
+```txt:requestBody
+{
+  title: string;
+  slug: string;
+  description: string;
+}
+```
+
+```txt:responseBody
+{
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  courses_count: string;
+  created_at: string;
+  updated_at: string;
+}
+```
+
+## PUT Update Course Category
+
+- `PUT BASE_URL/{slug}`
+  - Get course category data by slug
+  - The returned course category should have `txt:responseBody` shape
+
+```txt:requestParam
+slug: string;
+```
+
+```txt:requestBody
+{
+  title: string;
+  slug: string;
+  description: string;
+}
+```
+
+```txt:responseBody
+{
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  courses_count: string;
+  created_at: string;
+  updated_at: string;
+}
+```
