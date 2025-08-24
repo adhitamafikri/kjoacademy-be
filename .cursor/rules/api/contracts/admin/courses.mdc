@@ -40,30 +40,6 @@ BASE_URL: `${API_BASE_URL}/v1/admin/courses`
 }
 ```
 
-## GET Course By Slug
-
-- `GET BASE_URL/{slug}`
-  - Get course data by slug
-  - The returned course should have `txt:responseBody` shape
-
-```txt:responseBody
-{
-  id: number;
-  title: string;
-  slug: string;
-  description: string;
-  thumbnail_url: string;
-  enrollment_count: number;
-  duration_seconds: number;
-  is_published: boolean;
-  category: {
-    title: string;
-    slug: string;
-  };
-  modules_count: number;
-}
-```
-
 ## POST Create Courses
 
 - `POST BASE_URL`
@@ -101,7 +77,66 @@ slug: string;
 }
 ```
 
-## PUT Update Courses
+## GET Courses By Category Slug
+
+- `GET BASE_URL/categories/{slug}`
+  - Get courses data by category slug.
+  - Search by courses from specific category
+  - Each course returned should have `txt:responseBody` shape
+  - Note for backend:
+    - Make sure to use laravel `paginate` to return the list of the `txt:responseBody`
+
+```txt:requestQuery
+{
+  q?: string; // search query
+  perPage?: string; // how many items per page
+  page?: string;  // current page
+}
+```
+
+```txt:responseBody
+{
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  thumbnail_url: string;
+  enrollment_count: number;
+  duration_seconds: number;
+  is_published: boolean;
+  category: {
+    title: string;
+    slug: string;
+  };
+  modules_count: number;
+}
+```
+
+## GET Course By Slug
+
+- `GET BASE_URL/{slug}`
+  - Get course data by slug
+  - The returned course should have `txt:responseBody` shape
+
+```txt:responseBody
+{
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  thumbnail_url: string;
+  enrollment_count: number;
+  duration_seconds: number;
+  is_published: boolean;
+  category: {
+    title: string;
+    slug: string;
+  };
+  modules_count: number;
+}
+```
+
+## PUT Update Course
 
 - `PUT BASE_URL/{slug}`
   - Update course data
@@ -136,5 +171,21 @@ slug: string;
     slug: string;
   };
   modules_count: number;
+}
+```
+
+## DELETE Delete Course
+
+- `DELETE BASE_URL/{slug}`
+  - Delete course data (Soft Delete)
+  - The returned data should have `txt:responseBody` shape
+
+```txt:requestParam
+slug: string
+```
+
+```txt:responseBody
+{
+  message: string
 }
 ```

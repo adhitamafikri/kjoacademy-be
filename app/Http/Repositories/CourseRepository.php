@@ -15,21 +15,42 @@ class CourseRepository
         $perPage = $query['perPage'] ?? DEFAULT_PER_PAGE;
         $q = $query['q'] ?? null;
 
-        return Course::when($q !== null, function ($query) use ($q) {
-            $query->where('title', 'like', "%$q%");
-        })->paginate($perPage);
+        return Course::with(['categories', 'modules'])
+            ->when($q !== null, function ($query) use ($q) {
+                $query->where('title', 'like', "%$q%");
+            })
+            ->paginate($perPage);
     }
 
     public function findBySlug(string $slug)
     {
-        return Course::where('slug', $slug)->first();
+        return Course::with(['categories', 'modules'])
+            ->where('slug', $slug)
+            ->first();
     }
 
     public function getByCategorySlug(array $query, string $slug)
     {
         $perPage = $query['perPage'] ?? DEFAULT_PER_PAGE;
+        $searchTerm = $query['q'] ?? null;
+        
         $category = CourseCategory::where('slug', $slug)->first();
-        return $category->courses()->paginate($perPage);
+        
+        if (!$category) {
+            return null;
+        }
+        
+        // Use whereHas with explicit pivot table reference
+        $coursesQuery = Course::with(['categories', 'modules'])
+            ->whereHas('categories', function ($query) use ($category) {
+                $query->where('course_categories.id', $category->id);
+            });
+            
+        if ($searchTerm !== null) {
+            $coursesQuery->where('title', 'like', "%$searchTerm%");
+        }
+        
+        return $coursesQuery->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
     public function getMyCourses(User $user, array $query)
@@ -46,7 +67,7 @@ class CourseRepository
     public function update(Course $course, array $data)
     {
         $course->update($data);
-        return $course->fresh();
+        return $course->fresh(['categories', 'modules']);
     }
 
     public function delete(Course $course)

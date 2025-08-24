@@ -38,7 +38,7 @@ class Course extends Model
     // Relationships with eager loading optimization
     public function categories()
     {
-        return $this->belongsToMany(CourseCategory::class)
+        return $this->belongsToMany(CourseCategory::class, 'course_course_category', 'course_id', 'course_category_id')
             ->withPivot('is_primary')
             ->withTimestamps();
     }

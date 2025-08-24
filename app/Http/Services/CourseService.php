@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Http\Repositories\CourseRepository;
 use Exception;
+use App\Models\CourseCategory; // Added this import for getCoursesByCategorySlug
 
 class CourseService
 {
@@ -14,18 +15,46 @@ class CourseService
     public function getMany(Request $request)
     {
         $result = $this->courseRepository->getMany($request->query());
+        
+        // Transform the paginated data to match API contract
+        $result->getCollection()->transform(function ($course) {
+            return $this->transformCourseForApi($course);
+        });
+        
         return $result;
     }
 
     public function getCourseBySlug(string $slug)
     {
         $result = $this->courseRepository->findBySlug($slug);
+        
+        if ($result) {
+            return $this->transformCourseForApi($result);
+        }
+        
         return $result;
     }
 
     public function getCoursesByCategorySlug(Request $request, string $slug)
     {
         $result = $this->courseRepository->getByCategorySlug($request->query(), $slug);
+        
+        if ($result === null) {
+            throw new Exception('Category not found.');
+        }
+        
+        // Get the category for transformation
+        $category = CourseCategory::where('slug', $slug)->first();
+        
+        if (!$category) {
+            throw new Exception('Category not found.');
+        }
+        
+        // Transform the paginated data to match API contract
+        $result->getCollection()->transform(function ($course) use ($category) {
+            return $this->transformCourseForApi($course, $category);
+        });
+        
         return $result;
     }
 
@@ -48,8 +77,14 @@ class CourseService
             throw new Exception('A course with this slug already exists.');
         }
 
+        // Set default values for required fields
+        $data['enrollment_count'] = $data['enrollment_count'] ?? 0;
+        $data['duration_seconds'] = $data['duration_seconds'] ?? 0;
+        $data['is_published'] = $data['is_published'] ?? false;
+        $data['thumbnail_url'] = $data['thumbnail_url'] ?? '';
+
         $result = $this->courseRepository->create($data);
-        return $result;
+        return $this->transformCourseForApi($result);
     }
 
     public function updateCourse(string $slug, array $data)
@@ -74,7 +109,7 @@ class CourseService
         }
 
         $result = $this->courseRepository->update($course, $data);
-        return $result;
+        return $this->transformCourseForApi($result);
     }
 
     public function deleteCourse(string $slug)
@@ -92,5 +127,40 @@ class CourseService
 
         $result = $this->courseRepository->delete($course);
         return $result;
+    }
+
+    /**
+     * Transform course data to match API contract response shape
+     */
+    private function transformCourseForApi($course, $queryCategory = null)
+    {
+        // If we have a query category (from getByCategorySlug), use that
+        if ($queryCategory) {
+            $category = $queryCategory;
+        } else {
+            // Get primary category - if not found, try to get the first category
+            $category = $course->primaryCategory();
+            
+            // If no primary category found, get the first category from the loaded relationship
+            if (!$category && $course->categories && $course->categories->count() > 0) {
+                $category = $course->categories->first();
+            }
+        }
+        
+        return [
+            'id' => $course->id,
+            'title' => $course->title,
+            'slug' => $course->slug,
+            'description' => $course->description,
+            'thumbnail_url' => $course->thumbnail_url ?? '',
+            'enrollment_count' => $course->enrollment_count ?? 0,
+            'duration_seconds' => $course->duration_seconds ?? 0,
+            'is_published' => $course->is_published ?? false,
+            'category' => $category ? [
+                'title' => $category->title,
+                'slug' => $category->slug,
+            ] : null,
+            'modules_count' => $course->modules->count(),
+        ];
     }
 }

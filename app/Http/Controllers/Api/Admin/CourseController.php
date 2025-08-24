@@ -18,9 +18,7 @@ class CourseController extends Controller
     {
         try {
             $result = $this->courseService->getMany($request);
-            return response()->json([
-                "data" => $result,
-            ], 200);;
+            return response()->json($result, 200);
         } catch (Exception $e) {
             return response()->json([
                 "message" => $e->getMessage(),
@@ -87,7 +85,6 @@ class CourseController extends Controller
 
             return response()->json([
                 "message" => "Course deleted successfully",
-                "data" => $result,
             ], 200);
         } catch (Exception $e) {
             $statusCode = $e->getMessage() === 'Course not found.' ? 404 : 422;
@@ -101,13 +98,12 @@ class CourseController extends Controller
     {
         try {
             $result = $this->courseService->getCoursesByCategorySlug($request, $slug);
-            return response()->json([
-                "data" => $result,
-            ], 200);
+            return response()->json($result, 200);
         } catch (Exception $e) {
+            $statusCode = $e->getMessage() === 'Category not found.' ? 404 : 500;
             return response()->json([
                 "message" => $e->getMessage(),
-            ], 500);
+            ], $statusCode);
         }
     }
 }

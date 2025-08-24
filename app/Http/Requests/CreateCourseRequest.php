@@ -26,6 +26,7 @@ class CreateCourseRequest extends FormRequest
             'slug' => 'nullable|string|max:255|unique:courses,slug',
             'description' => 'required|string|max:2000',
             'thumbnail_url' => 'required|url|max:500',
+            'is_published' => 'sometimes|boolean',
         ];
     }
 

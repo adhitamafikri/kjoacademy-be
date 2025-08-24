@@ -35,6 +35,7 @@ class UpdateCourseRequest extends FormRequest
             ],
             'description' => 'sometimes|required|string|max:2000',
             'thumbnail_url' => 'sometimes|required|url|max:500',
+            'is_published' => 'sometimes|boolean',
         ];
     }
 
