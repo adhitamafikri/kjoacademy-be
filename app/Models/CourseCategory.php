@@ -26,6 +26,7 @@ class CourseCategory extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
+        'courses_count' => 'integer',
     ];
 
     // Relationship to courses

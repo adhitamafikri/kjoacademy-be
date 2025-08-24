@@ -14,12 +14,23 @@ class CourseCategoryService
     public function getCategories(Request $request)
     {
         $result = $this->courseCategoryRepository->getMany($request->query());
+        
+        // Transform the paginated data to match API contract
+        $result->getCollection()->transform(function ($category) {
+            return $this->transformCategoryForApi($category);
+        });
+        
         return $result;
     }
 
     public function getCategoryBySlug(string $slug)
     {
         $result = $this->courseCategoryRepository->findBySlug($slug);
+        
+        if ($result) {
+            return $this->transformCategoryForApi($result);
+        }
+        
         return $result;
     }
 
@@ -39,7 +50,7 @@ class CourseCategoryService
         $data['courses_count'] = 0;
 
         $result = $this->courseCategoryRepository->create($data);
-        return $result;
+        return $this->transformCategoryForApi($result);
     }
 
     public function updateCategory(string $slug, array $data)
@@ -64,7 +75,7 @@ class CourseCategoryService
         }
 
         $result = $this->courseCategoryRepository->update($category, $data);
-        return $result;
+        return $this->transformCategoryForApi($result);
     }
 
     public function deleteCategory(string $slug)
@@ -81,6 +92,22 @@ class CourseCategoryService
         }
 
         $result = $this->courseCategoryRepository->delete($category);
-        return $result;
+        return $this->transformCategoryForApi($result);
+    }
+
+    /**
+     * Transform category data to match API contract response shape
+     */
+    private function transformCategoryForApi($category)
+    {
+        return [
+            'id' => $category->id,
+            'title' => $category->title,
+            'slug' => $category->slug,
+            'description' => $category->description,
+            'courses_count' => $category->courses_count,
+            'created_at' => $category->created_at->toISOString(),
+            'updated_at' => $category->updated_at->toISOString(),
+        ];
     }
 }

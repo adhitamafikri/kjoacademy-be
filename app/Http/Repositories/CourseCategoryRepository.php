@@ -11,7 +11,7 @@ class CourseCategoryRepository
     public function getMany(array $query)
     {
         $perPage = $query['perPage'] ?? DEFAULT_PER_PAGE;
-        $q = $request['q'] ?? null;
+        $q = $query['q'] ?? null;
 
         return CourseCategory::when($q !== null, function ($query) use ($q) {
             $query->where('title', 'like', "%$q%");

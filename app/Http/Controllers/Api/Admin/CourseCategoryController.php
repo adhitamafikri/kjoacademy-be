@@ -17,9 +17,7 @@ class CourseCategoryController extends Controller
     {
         try {
             $result = $this->courseCategoryService->getCategories($request);
-            return response()->json([
-                "data" => $result,
-            ], 200);
+            return response()->json($result, 200);
         } catch (Exception $e) {
             return response()->json([
                 "message" => $e->getMessage(),
@@ -72,9 +70,10 @@ class CourseCategoryController extends Controller
                 "data" => $result,
             ], 200);
         } catch (Exception $e) {
+            $statusCode = $e->getMessage() === 'Course category not found.' ? 404 : 500;
             return response()->json([
                 "message" => $e->getMessage(),
-            ], 404);
+            ], $statusCode);
         }
     }
 
