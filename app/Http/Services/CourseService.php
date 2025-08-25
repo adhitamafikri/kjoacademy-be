@@ -15,46 +15,46 @@ class CourseService
     public function getMany(Request $request)
     {
         $result = $this->courseRepository->getMany($request->query());
-        
+
         // Transform the paginated data to match API contract
         $result->getCollection()->transform(function ($course) {
             return $this->transformCourseForApi($course);
         });
-        
+
         return $result;
     }
 
     public function getCourseBySlug(string $slug)
     {
         $result = $this->courseRepository->findBySlug($slug);
-        
+
         if ($result) {
-            return $this->transformCourseForApi($result);
+            return ['data' => $this->transformCourseForApi($result)];
         }
-        
+
         return $result;
     }
 
     public function getCoursesByCategorySlug(Request $request, string $slug)
     {
         $result = $this->courseRepository->getByCategorySlug($request->query(), $slug);
-        
+
         if ($result === null) {
             throw new Exception('Category not found.');
         }
-        
+
         // Get the category for transformation
         $category = CourseCategory::where('slug', $slug)->first();
-        
+
         if (!$category) {
             throw new Exception('Category not found.');
         }
-        
+
         // Transform the paginated data to match API contract
         $result->getCollection()->transform(function ($course) use ($category) {
             return $this->transformCourseForApi($course, $category);
         });
-        
+
         return $result;
     }
 
@@ -88,13 +88,13 @@ class CourseService
         unset($data['category_id']); // Remove from data array as it's not a course field
 
         $result = $this->courseRepository->create($data);
-        
+
         // Attach category if provided
         if ($categoryId) {
             $result->categories()->attach($categoryId, ['is_primary' => true]);
             $result->load(['categories', 'modules']); // Reload relationships
         }
-        
+
         return $this->transformCourseForApi($result);
     }
 
@@ -124,17 +124,17 @@ class CourseService
         unset($data['category_id']); // Remove from data array as it's not a course field
 
         $result = $this->courseRepository->update($course, $data);
-        
+
         // Update category relationship if provided
         if ($categoryId !== null) {
             // Remove existing primary category
             $result->categories()->updateExistingPivot($result->categories()->pluck('id'), ['is_primary' => false]);
-            
+
             // Attach new primary category
             $result->categories()->attach($categoryId, ['is_primary' => true]);
             $result->load(['categories', 'modules']); // Reload relationships
         }
-        
+
         return $this->transformCourseForApi($result);
     }
 
@@ -166,13 +166,13 @@ class CourseService
         } else {
             // Get primary category - if not found, try to get the first category
             $category = $course->primaryCategory();
-            
+
             // If no primary category found, get the first category from the loaded relationship
             if (!$category && $course->categories && $course->categories->count() > 0) {
                 $category = $course->categories->first();
             }
         }
-        
+
         return [
             'id' => $course->id,
             'title' => $course->title,
