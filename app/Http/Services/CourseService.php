@@ -183,6 +183,7 @@ class CourseService
             'duration_seconds' => $course->duration_seconds ?? 0,
             'is_published' => $course->is_published ?? false,
             'category' => $category ? [
+                'id' => $category->id,
                 'title' => $category->title,
                 'slug' => $category->slug,
             ] : null,

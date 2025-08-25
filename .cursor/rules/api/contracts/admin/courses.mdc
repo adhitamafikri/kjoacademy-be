@@ -33,6 +33,7 @@ BASE_URL: `${API_BASE_URL}/v1/admin/courses`
   duration_seconds: number;
   is_published: boolean;
   category: {
+    id: string;
     title: string;
     slug: string;
   };
@@ -70,6 +71,7 @@ BASE_URL: `${API_BASE_URL}/v1/admin/courses`
   duration_seconds: number;
   is_published: boolean;
   category: {
+    id: string;
     title: string;
     slug: string;
   };
@@ -107,6 +109,7 @@ BASE_URL: `${API_BASE_URL}/v1/admin/courses`
   duration_seconds: number;
   is_published: boolean;
   category: {
+    id: string;
     title: string;
     slug: string;
   };
@@ -133,6 +136,7 @@ BASE_URL: `${API_BASE_URL}/v1/admin/courses`
   duration_seconds: number;
   is_published: boolean;
   category: {
+    id: string;
     title: string;
     slug: string;
   };
@@ -175,6 +179,7 @@ slug: string;
   duration_seconds: number;
   is_published: boolean;
   category: {
+    id: string;
     title: string;
     slug: string;
   };
