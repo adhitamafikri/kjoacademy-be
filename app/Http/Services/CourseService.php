@@ -83,7 +83,18 @@ class CourseService
         $data['is_published'] = $data['is_published'] ?? false;
         $data['thumbnail_url'] = $data['thumbnail_url'] ?? '';
 
+        // Extract category_id for relationship
+        $categoryId = $data['category_id'] ?? null;
+        unset($data['category_id']); // Remove from data array as it's not a course field
+
         $result = $this->courseRepository->create($data);
+        
+        // Attach category if provided
+        if ($categoryId) {
+            $result->categories()->attach($categoryId, ['is_primary' => true]);
+            $result->load(['categories', 'modules']); // Reload relationships
+        }
+        
         return $this->transformCourseForApi($result);
     }
 
@@ -108,7 +119,22 @@ class CourseService
             }
         }
 
+        // Extract category_id for relationship
+        $categoryId = $data['category_id'] ?? null;
+        unset($data['category_id']); // Remove from data array as it's not a course field
+
         $result = $this->courseRepository->update($course, $data);
+        
+        // Update category relationship if provided
+        if ($categoryId !== null) {
+            // Remove existing primary category
+            $result->categories()->updateExistingPivot($result->categories()->pluck('id'), ['is_primary' => false]);
+            
+            // Attach new primary category
+            $result->categories()->attach($categoryId, ['is_primary' => true]);
+            $result->load(['categories', 'modules']); // Reload relationships
+        }
+        
         return $this->transformCourseForApi($result);
     }
 
@@ -161,6 +187,8 @@ class CourseService
                 'slug' => $category->slug,
             ] : null,
             'modules_count' => $course->modules->count(),
+            'created_at' => $course->created_at->toISOString(),
+            'updated_at' => $course->updated_at->toISOString(),
         ];
     }
 }

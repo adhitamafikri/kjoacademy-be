@@ -37,6 +37,8 @@ BASE_URL: `${API_BASE_URL}/v1/admin/courses`
     slug: string;
   };
   modules_count: number;
+  created_at: string;
+  updated_at: string;
 }
 ```
 
@@ -46,15 +48,13 @@ BASE_URL: `${API_BASE_URL}/v1/admin/courses`
   - Create new course data
   - The returned course should have `txt:responseBody` shape
 
-```txt:requestParam
-slug: string;
-```
-
 ```txt:requestBody
 {
   title: string;
+  category_id: string;
   slug: string;
   description: string;
+  thumbnail_url: string;
   is_published: boolean;
 }
 ```
@@ -74,6 +74,8 @@ slug: string;
     slug: string;
   };
   modules_count: number;
+  created_at: string;
+  updated_at: string;
 }
 ```
 
@@ -109,6 +111,8 @@ slug: string;
     slug: string;
   };
   modules_count: number;
+  created_at: string;
+  updated_at: string;
 }
 ```
 
@@ -133,6 +137,8 @@ slug: string;
     slug: string;
   };
   modules_count: number;
+  created_at: string;
+  updated_at: string;
 }
 ```
 
@@ -150,8 +156,10 @@ slug: string;
 ```txt:requestBody
 {
   title: string;
+  category_id: string;
   slug: string;
   description: string;
+  thumbnail_url: string;
   is_published: boolean;
 }
 ```
@@ -171,6 +179,8 @@ slug: string;
     slug: string;
   };
   modules_count: number;
+  created_at: string;
+  updated_at: string;
 }
 ```
 

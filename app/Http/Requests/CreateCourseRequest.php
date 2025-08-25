@@ -23,6 +23,7 @@ class CreateCourseRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
+            'category_id' => 'required|string|exists:course_categories,id',
             'slug' => 'nullable|string|max:255|unique:courses,slug',
             'description' => 'required|string|max:2000',
             'thumbnail_url' => 'required|url|max:500',
@@ -40,6 +41,8 @@ class CreateCourseRequest extends FormRequest
         return [
             'title.required' => 'The title field is required.',
             'title.max' => 'The title may not be greater than 255 characters.',
+            'category_id.required' => 'The category field is required.',
+            'category_id.exists' => 'The selected category does not exist.',
             'slug.unique' => 'This slug is already taken.',
             'slug.max' => 'The slug may not be greater than 255 characters.',
             'description.required' => 'The description field is required.',

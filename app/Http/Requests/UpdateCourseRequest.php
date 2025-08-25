@@ -26,6 +26,7 @@ class UpdateCourseRequest extends FormRequest
 
         return [
             'title' => 'sometimes|required|string|max:255',
+            'category_id' => 'sometimes|required|string|exists:course_categories,id',
             'slug' => [
                 'sometimes',
                 'nullable',
@@ -49,6 +50,8 @@ class UpdateCourseRequest extends FormRequest
         return [
             'title.required' => 'The title field is required.',
             'title.max' => 'The title may not be greater than 255 characters.',
+            'category_id.required' => 'The category field is required.',
+            'category_id.exists' => 'The selected category does not exist.',
             'slug.unique' => 'This slug is already taken.',
             'slug.max' => 'The slug may not be greater than 255 characters.',
             'description.required' => 'The description field is required.',

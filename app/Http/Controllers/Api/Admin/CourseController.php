@@ -31,10 +31,7 @@ class CourseController extends Controller
         try {
             $result = $this->courseService->createCourse($request->validated());
 
-            return response()->json([
-                "message" => "Course created successfully",
-                "data" => $result,
-            ], 201);
+            return response()->json($result, 201);
         } catch (Exception $e) {
             return response()->json([
                 "message" => $e->getMessage(),
@@ -51,9 +48,7 @@ class CourseController extends Controller
                     "message" => "Course not found",
                 ], 404);
             }
-            return response()->json([
-                "data" => $result,
-            ], 200);
+            return response()->json($result, 200);
         } catch (Exception $e) {
             return response()->json([
                 "message" => $e->getMessage(),
@@ -66,10 +61,7 @@ class CourseController extends Controller
         try {
             $result = $this->courseService->updateCourse($slug, $request->validated());
 
-            return response()->json([
-                "message" => "Course updated successfully",
-                "data" => $result,
-            ], 200);
+            return response()->json($result, 200);
         } catch (Exception $e) {
             $statusCode = $e->getMessage() === 'Course not found.' ? 404 : 500;
             return response()->json([
@@ -81,7 +73,7 @@ class CourseController extends Controller
     public function destroy(string $slug)
     {
         try {
-            $result = $this->courseService->deleteCourse($slug);
+            $this->courseService->deleteCourse($slug);
 
             return response()->json([
                 "message" => "Course deleted successfully",
