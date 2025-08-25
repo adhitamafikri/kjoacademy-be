@@ -24,7 +24,7 @@ BASE_URL: `${API_BASE_URL}/v1/admin/courses`
 
 ```txt:responseBody
 {
-  id: number;
+  id: string;
   title: string;
   slug: string;
   description: string;
@@ -61,7 +61,7 @@ slug: string;
 
 ```txt:responseBody
 {
-  id: number;
+  id: string;
   title: string;
   slug: string;
   description: string;
@@ -96,7 +96,7 @@ slug: string;
 
 ```txt:responseBody
 {
-  id: number;
+  id: string;
   title: string;
   slug: string;
   description: string;
@@ -120,7 +120,7 @@ slug: string;
 
 ```txt:responseBody
 {
-  id: number;
+  id: string;
   title: string;
   slug: string;
   description: string;
@@ -158,7 +158,7 @@ slug: string;
 
 ```txt:responseBody
 {
-  id: number;
+  id: string;
   title: string;
   slug: string;
   description: string;
