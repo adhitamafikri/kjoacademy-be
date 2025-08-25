@@ -95,7 +95,10 @@ class CourseService
             $result->load(['categories', 'modules']); // Reload relationships
         }
 
-        return $this->transformCourseForApi($result);
+        return [
+            'message' => 'Course created successfully',
+            'data' => $this->transformCourseForApi($result)
+        ];
     }
 
     public function updateCourse(string $slug, array $data)
@@ -127,15 +130,28 @@ class CourseService
 
         // Update category relationship if provided
         if ($categoryId !== null) {
-            // Remove existing primary category
-            $result->categories()->updateExistingPivot($result->categories()->pluck('id'), ['is_primary' => false]);
-
-            // Attach new primary category
-            $result->categories()->attach($categoryId, ['is_primary' => true]);
+            // Check if the category is already attached
+            $existingCategory = $result->categories()->where('course_categories.id', $categoryId)->first();
+            
+            if ($existingCategory) {
+                // Category already exists, just update it to be primary
+                $result->categories()->updateExistingPivot($categoryId, ['is_primary' => true]);
+                // Remove primary flag from other categories
+                $result->categories()->where('course_categories.id', '!=', $categoryId)->updateExistingPivot($result->categories()->where('course_categories.id', '!=', $categoryId)->pluck('id'), ['is_primary' => false]);
+            } else {
+                // Remove primary flag from existing categories
+                $result->categories()->updateExistingPivot($result->categories()->pluck('id'), ['is_primary' => false]);
+                // Attach new primary category
+                $result->categories()->attach($categoryId, ['is_primary' => true]);
+            }
+            
             $result->load(['categories', 'modules']); // Reload relationships
         }
 
-        return $this->transformCourseForApi($result);
+        return [
+            'message' => 'Course updated successfully',
+            'data' => $this->transformCourseForApi($result)
+        ];
     }
 
     public function deleteCourse(string $slug)
